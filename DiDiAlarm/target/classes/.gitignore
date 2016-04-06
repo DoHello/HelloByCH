@@ -1,5 +1,2 @@
-/com/
-/dy/
 /redis.properties
-/sms.properties
-/system.properties
+/.gitignore

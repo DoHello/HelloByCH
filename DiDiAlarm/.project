@@ -47,6 +47,11 @@
 			<location>I:/soft/development/workspace/Hrt/src</location>
 		</link>
 		<link>
+			<name>src-4</name>
+			<type>2</type>
+			<location>I:/soft/development/workspace/Hrt/src</location>
+		</link>
+		<link>
 			<name>src/main/hrt</name>
 			<type>2</type>
 			<location>F:/上海艾艺信息/JavaShares/02-Project/02-Hrt/01-Source/src</location>

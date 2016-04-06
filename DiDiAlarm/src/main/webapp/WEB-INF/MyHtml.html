@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>MyHtml.html</title>
+
+<meta name="keywords" content="keyword1,keyword2,keyword3">
+<meta name="description" content="this is my page">
+<meta name="content-type" content="text/html; charset=UTF-8">
+
+<!--<link rel="stylesheet" type="text/css" href="./styles.css">-->
+
+</head>
+
+<body>
+	<div class='am-cf'>
+		共<font color=red>6</font>条记录
+		<div class='am-fr'>
+			
+			<ul class='am-pagination'>
+				
+				<li class='am-disabled'><a href='#'>«</a></li>
+				<li class='am-active'><a>1</a></li>
+				<li><a href='#'>»</a></li>
+			</ul>
+		</div>
+		<div class='am-cf'>
+			共<a>共1页</a>
+			<div class='am-fr'>
+				<select title='显示条数' style="width:55px;float:left;"
+					name='page.showCount'changeCount(this.value)">
+					<option value='10'>10</option>
+					<option value='10'>10</option>
+					<option value='20'>20</option>
+					<option value='30'>30</option>
+					<option value='40'>40</option>
+					<option value='50'>50</option>
+					<option value='60'>60</option>
+					<option value='70'>70</option>
+					<option value='80'>80</option>
+					<option value='90'>90</option>
+					<option value='99'>99</option>
+				</select>
+			</div>
+		</div>
+	</div>
+	<script type="text/javascript">
+		function changeCount(value) {
+			window.parent.jzts();
+			if (true && document.forms[0]) {
+				var url = document.forms[0].getAttribute("action");
+				if (url.indexOf('?') > -1) {
+					url += "&page.currentPage=";
+				} else {
+					url += "?page.currentPage=";
+				}
+				url = url + "1&page.showCount=" + value;
+				document.forms[0].action = url;
+				document.forms[0].submit();
+			} else {
+				var url = document.location + '';
+				if (url.indexOf('?') > -1) {
+					if (url.indexOf('currentPage') > -1) {
+						var reg = /currentPage=\d*/g;
+						url = url.replace(reg, 'currentPage=');
+					} else {
+						url += "1&page.currentPage=";
+					}
+				} else {
+					url += "?page.currentPage=";
+				}
+				url = url + "&page.showCount=" + value;
+				document.location = url;
+			}
+		}
+	</script>
+</body>
+</html>

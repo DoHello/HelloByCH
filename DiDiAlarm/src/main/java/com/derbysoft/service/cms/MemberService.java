@@ -1,0 +1,282 @@
+package com.derbysoft.service.cms;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import org.apache.commons.codec.digest.DigestUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.derbysoft.dao.cms.EditionDao;
+import com.derbysoft.dao.cms.MemberDao;
+import com.derbysoft.dao.cms.NewsDao;
+import com.derbysoft.dao.cms.User_NewsDao;
+import com.derbysoft.dao.sys.AreaDao;
+import com.derbysoft.dao.sys.CityDao;
+import com.derbysoft.dao.sys.ProvinceDao;
+import com.derbysoft.entity.RegisterPhone;
+import com.derbysoft.entity.cms.Member;
+import com.derbysoft.entity.sys.SYS_Area;
+import com.derbysoft.entity.sys.SYS_City;
+import com.derbysoft.entity.sys.SYS_Province;
+import com.derbysoft.entity.sys.SYS_User;
+import com.derbysoft.redis.service.RedisService;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
+import dy.hrtworkframe.db.SQLUtil;
+
+
+
+  @Service
+   public class MemberService {
+	@Autowired
+	private NewsDao newDao;
+
+	@Autowired
+	private User_NewsDao user_NewsDao;
+
+	@Autowired
+	private EditionDao editionDao;
+	
+	@Autowired
+	private  CityDao cityDao;
+	
+	@Autowired
+	private ProvinceDao provinceDao;
+	
+	@Autowired
+	private AreaDao areaDao;
+	
+	@Autowired
+	private MemberDao memberDao;
+    
+
+	
+	@Autowired
+	private RedisService redisService;
+
+	private static final Map<Integer, Boolean> TYPE = new HashMap<Integer, Boolean>();
+
+	private static final ObjectMapper MAPPER = new ObjectMapper();
+
+	private static final Integer REDIS_TIME = 60 * 30;
+
+	static {
+		TYPE.put(1, true);
+		TYPE.put(2, true);
+		TYPE.put(3, true);
+	}
+	
+	public String getpassword(Member member){
+		
+		List<Member> query = memberDao.query(member);
+		
+		return query.get(0).getUserPassword();
+		
+	}
+	
+
+
+
+	/**
+	 * 检查数据是否可用
+	 * 
+	 * @param param
+	 * @param type
+	 * @return
+	 */
+	public Boolean check(String param, Integer type) {
+		if (!TYPE.containsKey(type)) {
+			return null;
+		}
+
+		Member record = new Member();
+
+		switch (type) {
+		case 1:
+			record.setUserName(param);
+			break;
+		case 2:
+			record.setTelephone(param);
+			break;
+		case 3:
+			record.setEmail(param);
+			break;
+		}
+
+		 Member user = this.memberDao.queryByPrimary(record);
+		// True：数据不可用，false：数据可用
+		return user != null;
+	}
+
+	/**
+	 * 注册用户
+	 * 
+	 * @param user
+	 * @return
+	 */
+	public Boolean saveUser(Member member) {
+		member.setUserID(null);
+		// 加密处理，使用MD5
+		member.setUserPassword(DigestUtils.md5Hex(member.getUserPassword()));
+		return true;
+	}
+
+	// 这里的逻辑是把user以kv的形式保存到redis中,默认存活时间为30分钟
+	public String doLoginToRedis(Member user) throws Exception {
+		// 验证写在controller上这里就不需要验证,直接写
+		String token = DigestUtils.md5Hex(System.currentTimeMillis()
+				+ user.getUserName()).toUpperCase();
+		this.redisService.set("TOKEN_" + token,
+				MAPPER.writeValueAsString(user), REDIS_TIME);
+		return token;
+	}
+
+	public Member queryMemberByToken(String token) throws Exception {
+		String key = "TOKEN_" + token;
+		String jsonData = this.redisService.get(key);
+		if (null == jsonData) {
+			// 登录超时
+			return null;
+		}
+		Member user = MAPPER.readValue(jsonData, Member.class);
+		// 重新设置生存时间
+		this.redisService.expire(key, REDIS_TIME);
+		return user;
+	}
+
+	public void setRedisUserTime(String token) {
+		String key = "TOKEN_" + token;
+		this.redisService.expire(key, REDIS_TIME);
+	}
+
+	public RegisterPhone queryRegisterByToken(String token) throws Exception {
+
+		String jsonData = this.redisService.get(token);
+
+		if (null == jsonData) {
+			return null;
+		}
+		RegisterPhone rp = MAPPER.readValue(jsonData, RegisterPhone.class);
+		return rp;
+	}
+
+	public String phoneToRedisNoExpire(String token, RegisterPhone code)
+			throws Exception {
+
+		this.redisService.set(token, MAPPER.writeValueAsString(code),
+				REDIS_TIME);
+		//this.redisService.expire(token, REDIS_TIME);
+		return token;
+	}
+
+	public String phoneToRedis(String token, RegisterPhone code)
+			throws Exception {
+
+		this.redisService.set(token, MAPPER.writeValueAsString(code),
+				REDIS_TIME);
+		this.redisService.expire(token, REDIS_TIME);
+		return token;
+	}
+
+	public String phoneToRedis(String token, String code)  {
+		this.redisService.set(token, code, REDIS_TIME);
+		this.redisService.expire(token, REDIS_TIME);
+		return token;
+	}
+
+	public void setRedisRegisterTime(String token)  {
+		// TODO Auto-generated method stub
+		this.redisService.expire(token, REDIS_TIME);
+	}
+    
+	/**
+	 * 修改地址
+	 * 
+	 * @param param
+	 * @param type
+	 * @return
+	 */
+	public void editAddress(Member user,Member entity) throws Exception {
+		entity.setUserID(user.getUserID());
+		memberDao.update(entity);
+	}
+	/**
+	 * 修改密码
+	 * 
+	 * @param param
+	 * @param type
+	 * @return
+	 */
+	public void editPassword(Member user , Member  entity) throws Exception{
+		String afterPassword = entity.getUserPassword();
+		user.setUserPassword(afterPassword);
+		String userID = user.getUserID();
+		entity.setUserID(userID);
+		memberDao.update(user);		
+	}
+	public List<SYS_Province> queryProvince() throws Exception {
+		List<SYS_Province> query = provinceDao.query(SYS_Province.class);
+		return query;
+	}
+
+
+
+
+	public  List<SYS_City> findCity(SYS_City city) throws Exception {
+		String w = " 1=1 and provinceID =  ? ";
+		List<Object> args = new ArrayList<Object>();
+		args.add(city.getProvinceID());
+		String sql = SQLUtil.getQuerySQL(SYS_City.class) + " where " + w;
+		List<SYS_City> query = cityDao.query(SYS_City.class, sql,
+				args.toArray());
+		return query;
+	}
+	
+	public List<Object> findArea(SYS_Area area) throws Exception {
+		String w = " 1=1 and cityID =  ? ";
+		List<Object> args = new ArrayList<Object>();
+		args.add(area.getCityID());
+		String sql = SQLUtil.getQuerySQL(SYS_Area.class) + " where " + w;
+		List<Object> query = areaDao.query(SYS_Area.class, sql,
+				args.toArray());
+		return query;
+		
+	}
+	/**
+	 * 
+	     * @discription 根据县的id更新用户的地址
+	     * @author Knight      
+	     * @created 2016年2月23日 上午10:09:27     
+	     * @param areaID
+	     * @param address
+	     * @param user
+	     * @throws Exception
+	 */
+	public void  updateAddressByAreaID (String  areaID,String address,Member user) throws Exception {
+		SYS_Area area2 = new SYS_Area();
+		area2.setAreaID(areaID);
+		List<SYS_Area> areaList = newDao.query(area2);
+
+		SYS_City sys_City = new SYS_City();
+		sys_City.setCityID(areaList.get(0).getCityID());
+		List<SYS_City> cityList = newDao.query(sys_City);
+
+		SYS_Province sys_Province = new SYS_Province();
+		sys_Province.setProvinceID(cityList.get(0).getProvinceID());
+		List<SYS_Province> provinceList = newDao.query(sys_Province);
+		Member entity = new Member();
+//		entity.setAddress(address);
+		entity.setAddress(provinceList.get(0).getProvince()+cityList.get(0).getCity()+areaList.get(0).getArea()+address);
+		entity.setCity(cityList.get(0).getCity());
+		entity.setCityID(cityList.get(0).getCityID());
+		entity.setArea(areaList.get(0).getArea());
+		entity.setAreaID(areaList.get(0).getAreaID());
+		entity.setProvince(provinceList.get(0).getProvince());
+		entity.setProvinceID(provinceList.get(0).getProvinceID());
+		this.editAddress(user, entity);
+		
+	}
+}

@@ -1,0 +1,144 @@
+package com.derbysoft.util;
+
+import java.awt.List;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
+
+import org.junit.Test;
+
+import com.derbysoft.entity.cms.GmsAlarmCall;
+import com.derbysoft.entity.cms.GmsAlarmCheack;
+import com.derbysoft.entity.cms.GmsAlarmReceive;
+import com.derbysoft.entity.cms.Member;
+import com.derbysoft.entity.sys.SYS_User;
+import com.mysql.fabric.xmlrpc.base.Array;
+
+import net.sf.json.JSONArray;
+import net.sf.json.JSONObject;
+
+public class StringToJsonUtils {
+
+	public static void main(String[] args) {
+	Map m = new HashMap();
+	m.put("1", 1);
+	m.put("2", 2);
+	System.out.println(m.toString());
+	m.remove("1");
+	System.out.println(m.toString());
+	ArrayList l= null;
+	l=new ArrayList();
+	System.out.println(l.size());
+	}
+	
+	
+	@Test
+	public void test1(){
+		Map m = new HashMap();
+		GmsAlarmCall a = new GmsAlarmCall();
+//		System.out.println(a.toString());
+		SYS_User s= new SYS_User();
+		s.setAlias("121");
+//		m.put("alarmCall", a);
+		m.put("poliseFirst", s);
+		JSONObject s1 = JSONObject.fromObject(a);
+//		String s = "{\"alarmCall\": {\"adressID\": \"122455\",\"asd\":\"sss\"},\"asd\":\"sss\"}";
+//		JSONObject m1 = JSONObject.fromObject(s);
+//		String object = (String) m1.get("asd");
+//		System.out.println(object);
+		GmsAlarmCall bean =(GmsAlarmCall) JSONObject.toBean((JSONObject) s1.get("alarmCall"),GmsAlarmCall.class);
+//		System.out.println(bean.getAdressID());
+		SYS_User object = (SYS_User)JSONObject.toBean((JSONObject)JSONObject.fromObject(m).get("poliseFirst"),SYS_User.class);
+//		System.out.println(s.get("addressID").equals(""));
+		System.out.println("".equals(null));
+	}
+	@Test
+	public void test2(){
+		Map m = new HashMap();
+		GmsAlarmCall a = new GmsAlarmCall();
+		m.put("alarmCall", a);
+		Map fromObject = JSONObject.fromObject(m);
+//		GmsAlarmCall object = (GmsAlarmCall) fromObject.get("alarmCall");
+	
+		System.out.println(fromObject);
+//		System.out.println(fromObject.get("alarmCall"));
+	}
+	@Test
+	public void test3(){
+		Map m = new HashMap();
+		Member a = new Member();
+		m.put("hasmember", a);
+		Map fromObject = JSONObject.fromObject(m);
+//		GmsAlarmCall object = (GmsAlarmCall) fromObject.get("alarmCall");
+		
+		System.out.println(fromObject);
+//		System.out.println(fromObject.get("alarmCall"));
+	}
+	@Test
+	public void test5(){
+		Map m = new HashMap();
+		SYS_User a = new SYS_User();
+		m.put("poliseInfo", a);
+		m.put("123", "456");
+		System.out.println(m.get("123").toString());
+		Map fromObject = JSONObject.fromObject(m);
+//		GmsAlarmCall object = (GmsAlarmCall) fromObject.get("alarmCall");
+		
+		System.out.println(fromObject);
+//		System.out.println(fromObject.get("alarmCall"));
+	}
+	@Test
+	public void test4(){
+		Map m = new HashMap();
+		GmsAlarmReceive a = new GmsAlarmReceive();
+		m.put("alarmReceive", a);
+		Map fromObject = JSONObject.fromObject(m);
+//		GmsAlarmCall object = (GmsAlarmCall) fromObject.get("alarmCall");
+		
+		System.out.println(fromObject);
+//		System.out.println(fromObject.get("alarmCall"));
+	}
+	@Test
+	public void test6(){
+		Map m = new HashMap();
+		GmsAlarmCheack a = new GmsAlarmCheack();
+		m.put("alarmCheack", a);
+		Map fromObject = JSONObject.fromObject(m);
+//		GmsAlarmCall object = (GmsAlarmCall) fromObject.get("alarmCall");
+		
+		System.out.println(fromObject);
+//		System.out.println(fromObject.get("alarmCall"));
+	}
+	@Test
+	public void test7(){
+		Map m = new HashMap();
+		m.put("1", 1);
+		m.put("2", 2);
+		m.put("3", 3);
+		m.remove("4");
+//		GmsAlarmCall object = (GmsAlarmCall) fromObject.get("alarmCall");
+		
+		System.out.println(m);
+//		System.out.println(fromObject.get("alarmCall"));
+	}
+//	public void test3(){
+//		String str = "{\"lendperson\":\"李四\",\"lendcompany\":\"有限公司\",\"checkperson\":\"李四\",\"lenddate\":\"2010-07-19T00:00:00\",\"lendcounts\":4,\" passports\":[{\"passportid\":\"d\",\"name\":\"李豫川\",\"passporttype\":\"K\"},{\"passportid\":\"K9051\",\"name\":\"李平\",\"passporttype\":\"K\"},{\"passportid\":\"K90517\",\"name\":\"袁寒梅\",\"passporttype\":\"K\"},{\"passportid\":\"K905199\",\"name\":\"贺明\",\"passporttype\":\"K\"}]}";
+//				   JSONObject jsonobject = JSONObject.fromObject(str);
+//				  PassportLendsEntity passportlends = null;
+//				  try {
+//				   //获取一个json数组
+//				   JSONArray array = jsonobject.getJSONArray("passports");
+//				   //将json数组 转换成 List<PassPortForLendsEntity>泛型
+//				   List<PassPortForLendsEntity> list = new ArrayList<PassPortForLendsEntity>();
+//				   for (int i = 0; i < array.size(); i++) {   
+//				            JSONObject object = (JSONObject)array.get(i);  
+//				            PassPortForLendsEntity passport = (PassPortForLendsEntity)JSONObject.toBean(object,
+//				              PassPortForLendsEntity.class);
+//				            if(passport != null){
+//				             list.add(passport);
+//				            }  
+//				         }
+//				   //转换PassportLendsEntity 实体类
+//				   passportlends = (PassportLendsEntity)JSONObject.toBean(jsonobject, PassportLendsEntity.class);
+//	}
+}

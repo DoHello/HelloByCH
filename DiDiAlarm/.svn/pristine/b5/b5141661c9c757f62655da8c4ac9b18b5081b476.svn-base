@@ -1,0 +1,16 @@
+<html>
+<body>
+<button style="display:none" class="button" onclick="run('notepad','')">记事本</button>
+</body>
+<script type="text/javascript">
+	function run(shell, par) {
+		try {
+			var x = new ActiveXObject("wscript.shell");
+			x.run(shell + " " + par);
+			x = null
+		} catch (e) {
+			alert(e)
+		}
+	}
+</script>
+</html>

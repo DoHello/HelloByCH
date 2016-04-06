@@ -1,0 +1,30 @@
+package com.derbysoft.controller.appgms;
+
+import javax.annotation.Resource;
+
+import org.quartz.Job;
+import org.quartz.JobExecutionContext;
+import org.quartz.JobExecutionException;
+import org.springframework.jdbc.core.JdbcTemplate;
+
+import com.derbysoft.dao.cms.NewsDao;
+import com.derbysoft.entity.cms.UserOrder;
+
+import dy.hrtworkframe.util.DateUtil;
+
+public class OrderQuartz implements Job{
+
+	
+	@Resource(name="newsDao")
+	public NewsDao userOrderDao;
+	
+	@Override
+	public void execute(JobExecutionContext arg0) throws JobExecutionException {		
+	String dateString = DateUtil.getDateString();	
+		String sql="UPDATE  gms_userorder  set STATUS ='noReservation'  where  OrderTime < " + "'"+dateString+"'";
+		userOrderDao.jdbcTemplate.update(sql);
+	}
+    
+	
+	
+}

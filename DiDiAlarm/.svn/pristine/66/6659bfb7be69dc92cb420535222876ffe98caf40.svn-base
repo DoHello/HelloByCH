@@ -1,0 +1,175 @@
+package com.derbysoft.controller.sys;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+
+import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
+
+import org.springframework.stereotype.Controller;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.servlet.ModelAndView;
+
+import com.derbysoft.dao.sys.DicDao;
+import com.derbysoft.entity.cms.Article;
+import com.derbysoft.entity.sys.SYS_Category;
+import com.derbysoft.entity.sys.SYS_Dic;
+import com.derbysoft.enums.DataStatusEnum;
+
+import dy.hrtworkframe.controller.base.BaseController;
+import dy.hrtworkframe.db.SQLUtil;
+import dy.hrtworkframe.entity.Pager;
+import dy.hrtworkframe.entity.User;
+import dy.hrtworkframe.util.Const;
+import dy.hrtworkframe.util.ExportUtils;
+import dy.hrtworkframe.util.MessageUtil;
+import dy.hrtworkframe.util.SortUtil;
+import dy.hrtworkframe.util.UUIDUtil;
+
+@Transactional
+@Controller
+@RequestMapping("dic.do")
+public class DicController extends BaseController {
+	
+	@Resource
+	private DicDao dicDao;
+
+	@RequestMapping(params="p=view")
+	public ModelAndView showListView(HttpSession session) throws Exception {
+		User user = (User) session.getAttribute(Const.SESSION_USER);
+		pd = getPageData();
+		try {
+			mv.addObject("model", pd);
+			mv.setViewName("/system/dic/parameter_view");
+		} catch (Exception e) {
+			return MessageUtil.exception(user, mv, e);
+		}
+		
+		return MessageUtil.success(mv);
+	}
+	
+	
+	@RequestMapping(params = "p=add")
+	public @ResponseBody Map<String,Object> add(@ModelAttribute SYS_Dic  entity, HttpSession session) {
+		User user = (User) session.getAttribute(Const.SESSION_USER);
+		try {
+			entity.setDicID(UUIDUtil.get32UUID());
+			entity.setDicValue(UUIDUtil.get32UUID());
+			entity.setStatus(DataStatusEnum.TAKE_EFFECT.getValue());
+			dicDao.insert(entity);
+		} catch (Exception e) {
+			return MessageUtil.exception(user, e);
+		}
+		
+		return MessageUtil.success();
+	}
+	
+	
+	@RequestMapping(params = "p=eyeView")
+	public ModelAndView showEyeView(SYS_Dic entity, HttpSession session) {
+		User user = (User) session.getAttribute(Const.SESSION_USER);
+		pd = getPageData();
+		pd.put("entity", dicDao.queryByPrimary(entity));
+		try {
+			List<SYS_Category> categories = dicDao.query(SYS_Category.class);
+			pd.put("category", categories);
+			mv.addObject("model", pd);
+			mv.setViewName("/system/dic/parameter_eye");
+			
+		} catch (Exception e) {
+			return MessageUtil.exception(user, mv, e);
+		}
+		
+		return MessageUtil.success(mv);
+	}
+	
+	
+
+	
+	
+	@RequestMapping(params = "p=showAddView")
+	public ModelAndView showAddView(@ModelAttribute SYS_Dic entity, HttpSession session) {
+		User user = (User) session.getAttribute(Const.SESSION_USER);
+		try {
+			List<SYS_Category> categories = dicDao.query(SYS_Category.class);
+			mv.addObject("model", getPageData().put("category", categories));
+			mv.setViewName("/system/dic/parameter_add");
+		} catch (Exception e) {
+			return MessageUtil.exception(user, mv, e);
+		}
+		
+		return MessageUtil.success(mv);
+	}
+	
+	
+	
+	@RequestMapping(params = "p=edit")
+	public @ResponseBody Map<String,Object> edit(@ModelAttribute SYS_Dic entity, HttpSession session) throws Exception {
+		User user = (User) session.getAttribute(Const.SESSION_USER);
+		try {
+				dicDao.update(entity);
+		} catch (Exception e) {
+			return MessageUtil.exception(user, e);
+		}
+		return MessageUtil.success();
+	}
+	
+	
+	@RequestMapping(params = "p=del")
+	public @ResponseBody Map<String,Object> del(@ModelAttribute SYS_Dic entity, HttpSession session) {
+		User user = (User) session.getAttribute(Const.SESSION_USER);
+		try {
+			entity.setStatus(DataStatusEnum.DELETE.getValue());
+			dicDao.update(entity);
+		} catch (Exception e) {
+			return MessageUtil.exception(user, e);
+		}
+		
+		return MessageUtil.success();
+	}
+	
+	
+	@RequestMapping(params = "p=find")
+	public @ResponseBody Pager find( Pager pager, HttpSession session,
+			HttpServletRequest request, HttpServletResponse response) {
+		try {
+			String w = " and dicName like ?  "+ SQLUtil.getWhereClause(pager);
+				List<Object> args = new ArrayList<Object>();
+				args.add("%"+pager.getParameters().get("searchText")+"%");
+				if (pager.getIsExport()) {
+					if (pager.getExportAllData()) {
+						pager.setExportDatas(dicDao.query(SQLUtil.getQuerySQL(SYS_Dic.class)));
+					}
+					try {
+						ExportUtils.export(request, response, pager);
+					} catch (Exception e) {
+						e.printStackTrace();
+					}
+					return null;
+				}
+			
+				if (pager.getPageSize() == 0) {
+					
+					String sql = SQLUtil.getQuerySQL(SYS_Dic.class) + " where " + w;
+					pager.setExhibitDatas(dicDao.query(SYS_Dic.class, sql,args.toArray()));
+					} else {
+					pager.setAdvanceQuerySorts(SortUtil.sortBuild1("DicID", "desc"));
+					dicDao.queryCount(pager, SYS_Dic.class, w, args.toArray());
+					dicDao.queryPager(SYS_Dic.class, w, args.toArray(), pager);
+					pager.setIsSuccess(true);
+				}
+		} catch (Exception e) {
+			e.printStackTrace();
+			pager.setIsSuccess(false);
+		}
+		
+		pager.setIsSuccess(true);
+		return pager;
+	}
+}

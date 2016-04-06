@@ -1,0 +1,12 @@
+/* Í¼Æ¬·Å´óµ¯³ö²ã */
+.zoominner {background: none repeat scroll 0 0 #FFFFFF; padding: 5px 10px 10px; text-align: left;}
+.zoominner p {height:30px; _position:absolute; _right:2px; _top:5px;}
+.zoominner p a { background: url("../images/imgzoom_tb.gif") no-repeat scroll 0 0 transparent; float: left; height: 17px; line-height: 100px; margin-left: 10px; overflow: hidden; width: 17px;}
+.zoominner p a.imgadjust {background-position: -40px 0;}
+.zoominner p a.imgclose { background-position: -80px 0; cursor:pointer;}
+.y {float: right; margin-bottom:10px;}
+.ctnlist .text img{ cursor:pointer;}
+#imgzoom_cover{background-color:#000000; filter:progid:DXImageTransform.Microsoft.Alpha(Opacity=70); opacity:0.7; position:absolute; z-index:800; top:0px; left: 0px; width:100%; display:none;}
+#imgzoom{ display:none; z-index:801; position:absolute;}
+#imgzoom_img{_width:300px; _height:200px; min-width:300px; min-height:200px; background:url(../images/imageloading.gif) center center no-repeat;}
+#imgzoom_zoomlayer{ _width:300px; _height:200px; _position:relative; _padding-top:30px; min-width:300px; min-height:200px;}

@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:jdbc="http://www.springframework.org/schema/jdbc" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:amq="http://activemq.apache.org/schema/core"
+	xsi:schemaLocation="
+		http://www.springframework.org/schema/beans
+		http://www.springframework.org/schema/beans/spring-beans-4.0.xsd
+		http://www.springframework.org/schema/jdbc
+		http://www.springframework.org/schema/jdbc/spring-jdbc-4.0.xsd">
+
+	<!-- Embedded ActiveMQ broker -->
+	<!-- <bean id="connectionFactory" class="org.apache.activemq.ActiveMQConnectionFactory"> 
+		<property name="brokerURL" value="vm:(broker:(tcp://localhost:61616)?persistent=false)?marshal=false"/> 
+		</bean> -->
+	<bean id="jmsFactory" class="org.apache.activemq.pool.PooledConnectionFactory"
+		destroy-method="stop">
+		<property name="connectionFactory">
+			<bean class="org.apache.activemq.ActiveMQConnectionFactory">
+				<property name="brokerURL">
+ 						<value>tcp://10.40.200.56:61616</value>
+<!-- 					<value>tcp://127.0.0.1:61616</value> 10.40.200.56-->
+				</property>
+			</bean>
+		</property>
+	</bean>
+
+
+	<!-- Spring JMS Template -->
+	<bean id="myJmsTemplate" class="org.springframework.jms.core.JmsTemplate">
+		<property name="connectionFactory" ref="jmsFactory" />
+	</bean>
+
+	<!-- 定义发送消息的队列： -->
+	<bean id="sendGSMMessageQueue" class="org.apache.activemq.command.ActiveMQQueue">
+		<constructor-arg value="gsm.message.push.queue" />
+	</bean>
+	<bean id="jpushSender" class="com.derbysoft.jms.activemq.JpushSender">
+		<property name="jmsTemplate" ref="myJmsTemplate"></property>
+		<property name="queue" ref="sendGSMMessageQueue"></property>
+	</bean>
+
+	<!-- JMS Topic -->
+	<!-- <bean id="chatTopic" class="org.apache.activemq.command.ActiveMQTopic"> 
+		<constructor-arg value="sampletopic.flex.jms.chat"/> </bean> -->
+	<bean id="destination" class="org.apache.activemq.command.ActiveMQQueue">
+		<constructor-arg index="0">
+			<value>MessageQueue</value>
+		</constructor-arg>
+	</bean>
+
+
+</beans>

@@ -1,0 +1,21 @@
+package com.derbysoft.entity.jms;
+
+
+
+
+import dy.hrtworkframe.annotation.Table;
+
+@Table(name="Demo")
+public class Demo {
+
+	private String dateTime;
+
+	public String getDateTime() {
+		return dateTime;
+	}
+
+	public void setDateTime(String dateTime) {
+		this.dateTime = dateTime;
+	}
+	
+}

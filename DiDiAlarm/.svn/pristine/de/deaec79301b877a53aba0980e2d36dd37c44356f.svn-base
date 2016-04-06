@@ -1,0 +1,515 @@
+package com.derbysoft.controller.cms;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import javax.servlet.http.HttpSession;
+
+import net.sf.json.JSONObject;
+
+import org.apache.commons.codec.digest.DigestUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+import com.derbysoft.dao.cms.MemberAndNews;
+import com.derbysoft.dao.cms.NewsDao;
+import com.derbysoft.dao.cms.User_NewsDao;
+import com.derbysoft.dao.sys.AreaDao;
+import com.derbysoft.dao.sys.CityDao;
+import com.derbysoft.dao.sys.PoliceEditionDao;
+import com.derbysoft.dao.sys.ProvinceDao;
+import com.derbysoft.dao.sys.UserDao;
+import com.derbysoft.entity.cms.GmsAlarmCall;
+import com.derbysoft.entity.cms.GmsAlarmCheack;
+import com.derbysoft.entity.cms.GmsAlarmReceive;
+import com.derbysoft.entity.cms.Member;
+import com.derbysoft.entity.cms.Message;
+import com.derbysoft.entity.cms.News;
+import com.derbysoft.entity.cms.PoliceEdition;
+import com.derbysoft.entity.sys.SYS_Area;
+import com.derbysoft.entity.sys.SYS_City;
+import com.derbysoft.entity.sys.SYS_Edition;
+import com.derbysoft.entity.sys.SYS_PoliceEdition;
+import com.derbysoft.entity.sys.SYS_Province;
+import com.derbysoft.entity.sys.SYS_User;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+import com.derbysoft.redis.service.RedisService;
+import com.derbysoft.redis.service.UserService;
+
+import dy.hrtworkframe.controller.base.BaseController;
+import dy.hrtworkframe.db.SQLUtil;
+import dy.hrtworkframe.entity.User;
+import dy.hrtworkframe.util.Const;
+import dy.hrtworkframe.util.DateUtil;
+import dy.hrtworkframe.util.MessageUtil;
+import dy.hrtworkframe.util.StringUtil;
+import dy.hrtworkframe.util.UUIDUtil;
+
+
+@Transactional
+@Controller("Police")
+@RequestMapping("police.do")
+
+
+
+public class PoliceController extends BaseController {
+	@Autowired
+	RedisService redisServcie;
+	@Autowired
+	private NewsDao newsDao;
+	@Autowired
+	private PoliceEditionDao policeEditionDao; 
+	@Autowired
+	private User_NewsDao user_NewsDao;
+	@Autowired
+	private UserService userService;
+	//这是警察个人信息
+	@RequestMapping(params = "p=appEyeView")
+	public @ResponseBody Map<String, Object> showEyeView( HttpSession session,@RequestBody JSONObject Body) throws Exception {
+		   JSONObject fromObject = JSONObject.fromObject(Body);
+	       String tokenID=fromObject.getString("tokenID");
+	      SYS_User user = userService.getRedisAPPUser(DigestUtils.md5Hex(tokenID), SYS_User.class);
+		Map<String, SYS_User> model = new HashMap<String, SYS_User>();
+		try {     	      
+	 	          String phone = StringUtil.replace(3, user.getPhone().length(), user.getPhone(), "******");     	
+                  String idCard = StringUtil.replace(6, user.getIdCard().length(), user.getIdCard(),"*********");
+                  user.setPhone(phone);
+                  user.setIdCard(idCard);  
+                  model.put("model", user);
+			//mv.setViewName("/system/user/system_user_eye");
+		} catch (Exception e) {
+			return MessageUtil.error("MSG6",500);
+		}
+		
+		return MessageUtil.success(model,"MSG1",200);
+	}
+	@RequestMapping(params = "p=isWorking")
+	@ResponseBody
+	public Map<String, Object> isWorking( HttpSession session,@RequestBody JSONObject Body) throws Exception {
+		try {
+		String tokenID=Body.getString("tokenID");
+		String isWorking=Body.getString("isWorking");
+		Object longitude=Body.get("longitude");
+		Object latitude=Body.get("latitude");
+		
+		if(tokenID==null||isWorking==null){
+			    return MessageUtil.error("MSG7",407);
+		}
+		try{
+		SYS_User user = userService.getRedisAPPUser(DigestUtils.md5Hex(tokenID), SYS_User.class);
+		Map<String, SYS_User> model = new HashMap<String, SYS_User>();
+		user.setIsWorking(isWorking);
+		if("okWorking".equals(isWorking)){
+//			try{
+//				 double a = Double.parseDouble(longitude.toString());
+//				 double b = Double.parseDouble(latitude.toString());
+//				}catch(Exception e)
+//				{
+//					e.printStackTrace();
+//					return MessageUtil.error("MSG29",429);
+//				}
+			user.setIsWorking(isWorking);
+			userService.setUsersAddress(user);
+		}else
+		if("noWorking".equals(isWorking)){
+			userService.delUsersAddress(user);
+		}else{
+			return MessageUtil.error("MSG6",500);
+		}
+		}catch(Exception e){
+			e.printStackTrace();
+			 return MessageUtil.error("MSG7",407);
+		}
+			return MessageUtil.success("MSG1",200);
+		} catch (Exception e) {
+			e.printStackTrace();
+			return MessageUtil.error("MSG6",500);
+		}
+
+	    
+		//sreturn MessageUtil.success(model,"MSG1",200);
+
+	}
+	//警员端的收藏信息
+	@RequestMapping(params = "p=collectNews")
+	public @ResponseBody Map<String, Object> CollectNews(HttpSession session,
+			@RequestBody JSONObject Body) throws Exception {
+		   JSONObject fromObject = JSONObject.fromObject(Body);
+	       String tokenID=fromObject.getString("tokenID");
+	      SYS_User user = userService.getRedisAPPUser(DigestUtils.md5Hex(tokenID), SYS_User.class);
+		String newsID = (String) fromObject.get("newsID");
+		try {
+			MemberAndNews memberAndNews = new MemberAndNews();
+			String userID = user.getUserID();
+			memberAndNews.setUserID(userID);
+			memberAndNews.setNewsID(newsID);
+			List<MemberAndNews> query = user_NewsDao.query(memberAndNews);
+			if(query.size()>0){
+				return MessageUtil.error("MSG104",104);
+			}
+			user_NewsDao.insert(memberAndNews);
+			return MessageUtil.success("MSG1",200);
+		} catch (Exception e) {
+			return MessageUtil.error("MSG6",500);
+		}
+	}
+	//警员端的取消收藏
+	@RequestMapping(params = "p=cancelNews")
+	public @ResponseBody Map<String, Object> CancelNews(HttpSession session,
+		@RequestBody JSONObject Body) throws Exception {
+		   JSONObject fromObject = JSONObject.fromObject(Body);
+	       String tokenID=fromObject.getString("tokenID");
+	      SYS_User user = userService.getRedisAPPUser(DigestUtils.md5Hex(tokenID), SYS_User.class);
+		 String newsID = (String) fromObject.get("newsID");
+		try {
+			MemberAndNews memberAndNews = new MemberAndNews();
+			String userID = user.getUserID();
+			memberAndNews.setUserID(userID);
+			memberAndNews.setNewsID(newsID);
+			List<MemberAndNews> query = user_NewsDao.query(memberAndNews);
+			if(query.size()<1){
+				return MessageUtil.error("MSG103",103);
+			}
+			String w="DELETE from cms_user_news where newsID='"+newsID+"'and userid='"+userID+"'";
+			//user_NewsDao.delete(memberAndNews);
+			newsDao.jdbcTemplate.execute(w);
+			return MessageUtil.success("MSG1",200);
+		} catch (Exception e) {
+			return MessageUtil.error("MSG6",500);
+		}
+	}
+	//显示警员端的收藏信息
+	@RequestMapping(params ="p=findNews")
+	public @ResponseBody Map<String,Object> findNews(HttpSession session,@RequestBody JSONObject Body) throws Exception {
+		   JSONObject fromObject = JSONObject.fromObject(Body);
+	       String tokenID=fromObject.getString("tokenID");
+	      SYS_User user = userService.getRedisAPPUser(DigestUtils.md5Hex(tokenID), SYS_User.class);
+	    try {
+	    	
+	    	String w="SELECT * from cms_news ,cms_user_news where cms_news.NewsID=cms_user_news.NewsID and cms_user_news.UserID= ? ";
+			List<Object> args = new ArrayList<Object>();
+			args.add(user.getUserID());
+			Map<String,Object> params = new HashMap<String, Object>();
+			List<News> querys = newsDao.query(News.class, w,
+					args.toArray());
+			params.put("model",querys);
+			return MessageUtil.success(params,"MSG1",200);  
+	    } catch (Exception e) {
+	    	return MessageUtil.error("MSG6",500);
+	    }	
+}
+    //这是警员端的版本信息
+	@RequestMapping(params = "p=edition")
+	public @ResponseBody Map<String, Object> Edition(){
+		 PoliceEdition policeEdition = new PoliceEdition();
+		try {
+			List<PoliceEdition> query = newsDao.query(policeEdition);
+			PoliceEdition policeEdition2 = query.get(0);
+			HashMap<String, PoliceEdition> map = new HashMap<String, PoliceEdition>();
+			map.put("model",policeEdition2);
+			return MessageUtil.success(map, "MSG1", 200);
+		} catch (Exception e) {
+			return MessageUtil.error("MSG6",500);
+		}	
+	}
+
+/*	//取消登陆
+	@RequestMapping(params = "offline")
+	public @ResponseBody Map<String, Object> Offline(HttpSession session){
+	    try {
+			session.invalidate();
+		} catch (Exception e) {
+          return MessageUtil.error(2,2,2,2);
+		}
+		return MessageUtil.success(1,1,1,1);
+	}*/
+	//查找所有的新闻
+	/*@RequestMapping(params ="p=findAllNews")
+	public @ResponseBody Map<String,Object> findAllNews(@ModelAttribute News news ,HttpSession session) throws Exception {
+		SYS_User user = (SYS_User) session.getAttribute(Const.SESSION_USER);
+		
+		try {
+			String w = " 1=1 and state =  ?  or state = ? ";
+			List<Object> args = new ArrayList<Object>();
+			args.add("2");
+			args.add("3");
+			String sql = SQLUtil.getQuerySQL(News.class) + " where " + w;
+			List<News> querys = newsDao.query(News.class, sql,
+					args.toArray());
+			//这是找那些是收藏的news
+			String w1 = " 1=1 and userid =  ? ";
+			List<Object> args1 = new ArrayList<Object>();
+			args1.add(user.getUserID());
+			String sql1 = SQLUtil.getQuerySQL(MemberAndNews.class) + " where " + w1;
+			List<MemberAndNews> querys1 = user_NewsDao.query(MemberAndNews.class, sql1,
+					args1.toArray());
+			
+			for(MemberAndNews  memberAndNews:querys1){
+				for(News news1 :querys){
+					if(news1.getNewsID().equals(memberAndNews.getNewsID())){
+						news1.setCollectState("1");
+					}else{news1.setCollectState("0");
+					}
+				}
+			}
+            Map<String, List<MemberAndNews>> hashMap = new HashMap<String, List<MemberAndNews>>();
+            hashMap.put("model",querys1);
+			return MessageUtil.success(hashMap,"MSG200",200);
+		} catch (Exception e) {
+			return MessageUtil.error("MSG6",500);
+		}
+		
+}*/
+	
+/*	@RequestMapping(params = "p=findAllNews1")
+	public @ResponseBody Map<String, Object> findAllNews1(
+			 HttpSession session,@RequestBody JSONObject Body) throws Exception {
+		   JSONObject fromObject = JSONObject.fromObject(Body);
+	       String tokenID=fromObject.getString("tokenID");
+	      SYS_User user = userService.getRedisAPPUser(tokenID, SYS_User.class);
+	       String userID = user.getUserID();
+ 	    String w1="select * from (select b.* , 'okCollect' as collectState from (SELECT * from  cms_user_news where userid="+"'"+userID+"'"+") a LEFT JOIN  (select * from cms_news where State='policeNews' or State='allNews') b   on b.newsid=a.newsid   UNION select * , 'noCollect' as collectState from cms_news where newsid  not in (select NewsID from cms_user_news where userid="+"'"+userID+"'"+") and State= 'policeNews' or State='allNews' ) c order BY c.updatetime DESC";
+ 		try {					
+ 			List<Map<String, Object>> query = newsDao.query(w1);
+ 			HashMap<String, List<Map<String, Object>>> hashMap = new HashMap<String, List<Map<String, Object>>>();
+ 			hashMap.put("model", query);
+ 			return MessageUtil.success(hashMap, "MSG1",200);
+		} catch (Exception e) {
+			return MessageUtil.error("MSG6",500);
+		}
+	}	*/
+	//警察端查看所有新闻
+	@RequestMapping(params = "p=findAllNews2")
+	public @ResponseBody Map<String, Object> findAllNews2(
+			 HttpSession session ,@RequestBody JSONObject Body) throws Exception {
+		   JSONObject fromObject = JSONObject.fromObject(Body);
+	       String tokenID=fromObject.getString("tokenID");
+	       SYS_User user = userService.getRedisAPPUser(DigestUtils.md5Hex(tokenID), SYS_User.class);
+           String userID = user.getUserID();
+           int page=fromObject.getInt("page");
+           int i= (page-1)*10;
+ 	      // User_News user_News = new User_News();
+          //String w1="select * from (select b.* , 'okCollect' as collectState from (SELECT * from  cms_user_news where userid="+"'"+userID+"'"+") a LEFT JOIN  (select * from cms_news where State='peopleNews' or State='allNews') b   on b.newsid=a.newsid   UNION select * , 'noCollect' as collectState from cms_news where newsid  not in (select NewsID from cms_user_news where userid="+"'"+userID+"'"+") and State= 'allNews' or State='peopleNews' ) c order BY c.updatetime DESC";
+ 	       //这是查新闻不是焦点
+ 	       String w2="select * from (select b.* , 'okCollect' as collectState from (SELECT * from  cms_user_news where userid="+"'"+userID+"'"+") a LEFT JOIN  (select * from (select * from cms_news where  PublishState='all' or PublishState= 'police' ) t where    t.FocusStatus='noFocus'   AND t.State= 'news' ) b   on b.newsid=a.newsid   UNION select * , 'noCollect' as collectState from (select * from cms_news where  PublishState='all' or PublishState= 'police' ) t where t.newsid  not in (select NewsID from cms_user_news where userid="+"'"+userID+"'"+") and t.State= 'news' and t.FocusStatus='noFocus' ) c where 1=1 order BY c.updatetime DESC LIMIT "+i+" ,10";
+
+           //这是查公告不是焦点
+ 	      // String w3="select * from (select b.* , 'okCollect' as collectState from (SELECT * from  cms_user_news where userid="+"'"+userID+"'"+") a LEFT JOIN  (select * from (select * from cms_news where  PublishState='all' or PublishState= 'police' ) t where    t.FocusStatus='noFocus'   AND t.State= 'notice' ) b   on b.newsid=a.newsid   UNION select * , 'noCollect' as collectState from (select * from cms_news where  PublishState='all' or PublishState= 'police' ) t where t.newsid  not in (select NewsID from cms_user_news where userid="+"'"+userID+"'"+") and t.State= 'notice' and t.FocusStatus='noFocus' ) c order BY c.updatetime DESC";
+ 	       //这是查新闻是焦点
+ 	       String w4="select * from (select b.* , 'okCollect' as collectState from (SELECT * from  cms_user_news where userid="+"'"+userID+"'"+") a LEFT JOIN  (select * from (select * from cms_news where  PublishState='all' or PublishState= 'police' ) t where    t.FocusStatus='yesFocus'   AND t.State= 'news' ) b   on b.newsid=a.newsid   UNION select * , 'noCollect' as collectState from (select * from cms_news where  PublishState='all' or PublishState= 'police' ) t where t.newsid  not in (select NewsID from cms_user_news where userid="+"'"+userID+"'"+") and t.State= 'news' and t.FocusStatus='yesFocus' ) c order BY c.updatetime DESC";                    
+           //这是查公告是焦点
+ 	       //String w5="select * from (select b.* , 'okCollect' as collectState from (SELECT * from  cms_user_news where userid="+"'"+userID+"'"+") a LEFT JOIN  (select * from (select * from cms_news where  PublishState='all' or PublishState= 'police' ) t where    t.FocusStatus='yesFocus'   AND t.State= 'notice' ) b   on b.newsid=a.newsid   UNION select * , 'noCollect' as collectState from (select * from cms_news where  PublishState='all' or PublishState= 'police' ) t where t.newsid  not in (select NewsID from cms_user_news where userid="+"'"+userID+"'"+") and t.State= 'notice' and t.FocusStatus='yesFocus' ) c order BY c.updatetime DESC";	       
+ 	       try {	
+ 		    
+            List<News> query2 = newsDao.query(News.class, w2);
+            List<News> query4 = newsDao.query(News.class, w4);
+ 		    //List<Map<String, Object>> query5 = newsDao.query(w5);
+ 		   if(query4.size()>0){
+ 	 		   
+ 			   for(int j=0;j<query4.size();j++ ){
+ 				   if(null==query4.get(j).getNewsID()){
+ 					  query4.remove(j);  
+ 				   }
+ 			   }}
+ 		  if(query2.size()>0){
+ 			   for(int j=0;j<query2.size();j++ ){
+ 				   if(null==query2.get(j).getNewsID()){
+ 					  query2.remove(j);  
+ 				   }
+ 			   }
+ 			   }
+ 			HashMap<String,List<News> > hashMap = new HashMap<String, List<News> >();			
+            hashMap.put("nofocusAndNews",query2);
+           // hashMap.put("nofocusAndNotice", query3);
+            hashMap.put("yesFocusAndNews",query4);
+           // hashMap.put("yesFocusAndNotice",query5);
+ 		    //newsdao
+ 			//List<Map<String, Object>> query = newsDao.query(w1);
+ 		//	HashMap<String, List<Map<String, Object>>> nofocusAndNews = new HashMap<String, List<Map<String, Object>>>();			
+ 			//HashMap<String, List<Map<String, Object>>> nofocusAndNotice = new HashMap<String, List<Map<String, Object>>>();
+ 			//HashMap<String, List<Map<String, Object>>> yesFocusAndNews = new HashMap<String, List<Map<String, Object>>>();
+ 			//HashMap<String, List<Map<String, Object>>> yesFocusAndNotice = new HashMap<String, List<Map<String, Object>>>();
+ 		   
+ 			return MessageUtil.success(hashMap, "MSG1",200);
+		} catch (Exception  e) {
+			return MessageUtil.error("MSG6",500);
+		}
+	}
+	
+	@RequestMapping(params = "p=findAllNews3")
+	public @ResponseBody Map<String, Object> findAllNews3(
+			 HttpSession session ,@RequestBody JSONObject Body) throws Exception {
+		   JSONObject fromObject = JSONObject.fromObject(Body);
+	       String tokenID=fromObject.getString("tokenID");
+	       int page=fromObject.getInt("page");
+	       SYS_User user = userService.getRedisAPPUser(DigestUtils.md5Hex(tokenID), SYS_User.class);
+           String userID = user.getUserID();
+ 	      // User_News user_News = new User_News();
+          //String w1="select * from (select b.* , 'okCollect' as collectState from (SELECT * from  cms_user_news where userid="+"'"+userID+"'"+") a LEFT JOIN  (select * from cms_news where State='peopleNews' or State='allNews') b   on b.newsid=a.newsid   UNION select * , 'noCollect' as collectState from cms_news where newsid  not in (select NewsID from cms_user_news where userid="+"'"+userID+"'"+") and State= 'allNews' or State='peopleNews' ) c order BY c.updatetime DESC";
+ 	       //这是查新闻不是焦点
+ 	      // String w2="select * from (select b.* , 'okCollect' as collectState from (SELECT * from  cms_user_news where userid="+"'"+userID+"'"+") a LEFT JOIN  (select * from (select * from cms_news where  PublishState='all' or PublishState= 'member' ) t where    t.FocusStatus='noFocus'   AND t.State= 'news' ) b   on b.newsid=a.newsid   UNION select * , 'noCollect' as collectState from (select * from cms_news where  PublishState='all' or PublishState= 'member' ) t where t.newsid  not in (select NewsID from cms_user_news where userid="+"'"+userID+"'"+") and t.State= 'news' and t.FocusStatus='noFocus' ) c where 1=1 order BY c.updatetime DESC LIMIT 0,10";
+           int i= (page-1)*10;
+ 	       //这是查公告不是焦点
+ 	       String w3="select * from (select b.* , 'okCollect' as collectState from (SELECT * from  cms_user_news where userid="+"'"+userID+"'"+") a LEFT JOIN  (select * from (select * from cms_news where  PublishState='all' or PublishState= 'police' ) t where    t.FocusStatus='noFocus'   AND t.State= 'notice' ) b   on b.newsid=a.newsid   UNION select * , 'noCollect' as collectState from (select * from cms_news where  PublishState='all' or PublishState= 'police' ) t where t.newsid  not in (select NewsID from cms_user_news where userid="+"'"+userID+"'"+") and t.State= 'notice' and t.FocusStatus='noFocus' ) c where 1=1 order BY c.updatetime DESC LIMIT "+i+" ,10";
+ 	       //这是查新闻是焦点
+ 	      // String w4="select * from (select b.* , 'okCollect' as collectState from (SELECT * from  cms_user_news where userid="+"'"+userID+"'"+") a LEFT JOIN  (select * from (select * from cms_news where  PublishState='all' or PublishState= 'member' ) t where    t.FocusStatus='yesFocus'   AND t.State= 'news' ) b   on b.newsid=a.newsid   UNION select * , 'noCollect' as collectState from (select * from cms_news where  PublishState='all' or PublishState= 'member' ) t where t.newsid  not in (select NewsID from cms_user_news where userid="+"'"+userID+"'"+") and t.State= 'news' and t.FocusStatus='yesFocus' ) c order BY c.updatetime DESC";                    
+           //这是查公告是焦点
+ 	       String w5="select * from (select b.* , 'okCollect' as collectState from (SELECT * from  cms_user_news where userid="+"'"+userID+"'"+") a LEFT JOIN  (select * from (select * from cms_news where  PublishState='all' or PublishState= 'police' ) t where    t.FocusStatus='yesFocus'   AND t.State= 'notice' ) b   on b.newsid=a.newsid   UNION select * , 'noCollect' as collectState from (select * from cms_news where  PublishState='all' or PublishState= 'police' ) t where t.newsid  not in (select NewsID from cms_user_news where userid="+"'"+userID+"'"+") and t.State= 'notice' and t.FocusStatus='yesFocus' ) c order BY c.updatetime DESC";
+
+ 	       
+ 	       try {	
+ 	    	   
+			//List<Map<String, Object>> query2 = newsDao.query(w2);
+ 		   List<News> query3 = newsDao.query(News.class, w3);
+            List<News> query5 = newsDao.query(News.class, w5);
+ 			HashMap<String, List<News>> hashMap = new HashMap<String, List<News>>();			
+ 		   if(query5.size()>0){
+ 	 		   
+ 			   for(int j=0;j<query5.size();j++ ){
+ 				   if(null==query5.get(j).getNewsID()){
+ 					  query5.remove(j);  
+ 				   }
+ 			   }}
+ 		  if(query3.size()>0){
+ 			   for(int j=0;j<query3.size();j++ ){
+ 				   if(null==query3.get(j).getNewsID()){
+ 					  query3.remove(j);  
+ 				   }
+ 			   }
+ 			   }
+ 			// hashMap.put("nofocusAndNews",query2);
+            hashMap.put("nofocusAndNotice", query3);
+           // hashMap.put("yesFocusAndNews",query4);
+            hashMap.put("yesFocusAndNotice",query5);
+ 		    //newsdao
+ 			//List<Map<String, Object>> query = newsDao.query(w1);
+ 		//	HashMap<String, List<Map<String, Object>>> nofocusAndNews = new HashMap<String, List<Map<String, Object>>>();			
+ 			//HashMap<String, List<Map<String, Object>>> nofocusAndNotice = new HashMap<String, List<Map<String, Object>>>();
+ 			//HashMap<String, List<Map<String, Object>>> yesFocusAndNews = new HashMap<String, List<Map<String, Object>>>();
+ 			//HashMap<String, List<Map<String, Object>>> yesFocusAndNotice = new HashMap<String, List<Map<String, Object>>>();
+            
+ 			return MessageUtil.success(hashMap, "MSG1",200);
+		} catch (Exception  e) {
+			return MessageUtil.error("MSG6",500);
+		}
+	}
+
+	
+	//找备案的接警
+	@RequestMapping(params = "p=receive")
+	public @ResponseBody Map<String, Object> receive(
+			 HttpSession session,@RequestBody JSONObject Body) throws Exception {
+		  JSONObject fromObject = JSONObject.fromObject(Body);
+	      String tokenID=fromObject.getString("tokenID");
+	      SYS_User user = userService.getRedisAPPUser(DigestUtils.md5Hex(tokenID), SYS_User.class);
+         // SYS_User user = new SYS_User();
+        //  user.setUserID("1231231231");
+	        String w="select * from (select * from gms_alarm_call where  AlarmID in (select AlarmID from gms_alarm_receive where AlarmRefuseID  is  null  and ischeack='okcheack' and userid ='"+user.getUserID()+"' )) a LEFT JOIN (select InputDate as receiveUpdate ,AlarmID , AlarmReceiveID from gms_alarm_receive where AlarmRefuseID  is  null  and ischeack='okcheack' and userid ='"+user.getUserID()+"' ) b ON b.AlarmID=a.AlarmID " ;
+        try {					
+ 			//List<Map<String, Object>> query = newsDao.query(w);
+ 			List<GmsAlarmCall> query2 = newsDao.query(GmsAlarmCall.class, w);
+ 			HashMap<String,List<GmsAlarmCall>> hashMap = new HashMap<String,List<GmsAlarmCall>>();
+ 			hashMap.put("model", query2);
+ 			return MessageUtil.success(hashMap, "MSG1",200);
+		} catch (Exception e) {
+			return MessageUtil.error("MSG6",500);
+		}
+	}		
+	//找未备案的接警
+	
+	@RequestMapping(params = "p=findNoCheack")
+	public @ResponseBody Map<String, Object> findCheack(
+			 HttpSession session,@RequestBody JSONObject Body) throws Exception {
+		JSONObject fromObject = JSONObject.fromObject(Body);
+	    String tokenID=fromObject.getString("tokenID");
+	    SYS_User user = userService.getRedisAPPUser(DigestUtils.md5Hex(tokenID), SYS_User.class);
+        String w="select * from (select * from gms_alarm_call where  AlarmID in (select AlarmID from gms_alarm_receive where  ischeack='nocheack' and userid ='"+user.getUserID()+"' )) a LEFT JOIN (select InputDate as receiveUpdate ,AlarmID , AlarmReceiveID from gms_alarm_receive where  ischeack='nocheack' and userid ='"+user.getUserID()+"' ) b ON b.AlarmID=a.AlarmID " ;
+        try {					
+ 			//List<Map<String, Object>> query = newsDao.query(w);
+ 			List<GmsAlarmReceive> query = newsDao.query(GmsAlarmReceive.class,w);
+        	HashMap<String, List<GmsAlarmReceive>> hashMap = new HashMap<String, List<GmsAlarmReceive>>();
+ 			hashMap.put("model", query);
+ 			return MessageUtil.success(hashMap, "MSG1",200);
+		} catch (Exception e) {
+			return MessageUtil.error("MSG6",500);
+		}
+	}
+	
+	@RequestMapping(params="p=saveMessage")
+	public @ResponseBody Map<String, Object> saveMessage  (HttpSession session,@RequestBody JSONObject Body) throws Exception {
+		  try {  
+		JSONObject fromObject = JSONObject.fromObject(Body);
+	       String tokenID=fromObject.getString("tokenID");
+	      SYS_User user = userService.getRedisAPPUser(DigestUtils.md5Hex(tokenID), SYS_User.class);
+	       String context = fromObject.getString("context");
+	       Message message = new Message();
+	       message.setContext(context);
+	       message.setPhone(message.getPhone());
+	       message.setStatus("policeMessage");
+	     
+		    message.setPhone(user.getPhone());
+			message.setCreateTime(DateUtil.getDateString());
+			message.setUserID(user.getUserID());
+			message.setUserName(user.getRealName());
+			message.setMessageID(UUIDUtil.get32UUID());
+			
+			newsDao.insert(message);
+			
+			/*pd.put("newsList", newsList);*/
+           	return MessageUtil.success("MSG1",200);			
+		} catch (Exception e) {
+			return MessageUtil.error("MSG6",500);
+		}
+	}
+	
+	
+	@RequestMapping(params="p=findCall")
+	public @ResponseBody Map<String, Object> findCall  (HttpSession session,@RequestBody JSONObject Body) throws Exception {
+		  try {  		  
+		   JSONObject fromObject = JSONObject.fromObject(Body);
+	       String alarmReceiveID = fromObject.getString("alarmReceiveID");
+	       GmsAlarmReceive gmsAlarmReceive = new GmsAlarmReceive();
+	       gmsAlarmReceive.setAlarmReceiveID(alarmReceiveID);
+	       List<GmsAlarmReceive> query = newsDao.query(gmsAlarmReceive);
+	       GmsAlarmReceive gmsAlarmReceive2 = query.get(0);
+	       GmsAlarmCall gmsAlarmCall = new GmsAlarmCall();
+			gmsAlarmCall.setAlarmID(gmsAlarmReceive2.getAlarmID());
+			List<GmsAlarmCall> query2 = newsDao.query(gmsAlarmCall);
+			GmsAlarmCall gmsAlarmCall2 = query2.get(0);
+            GmsAlarmCheack gmsAlarmCheack = new GmsAlarmCheack();
+            gmsAlarmCheack.setAlarmReceiveID(gmsAlarmCheack.getAlarmID());
+            List<GmsAlarmCheack> query3 = newsDao.query(gmsAlarmCheack);
+            GmsAlarmCheack gmsAlarmCheack2 = query3.get(0);
+            HashMap<String, Object> hashMap = new HashMap<String, Object>();
+            
+            hashMap.put("call", gmsAlarmCall2);
+            hashMap.put("cheack", gmsAlarmCheack2);
+            hashMap.put("receive", gmsAlarmReceive2);
+
+            return MessageUtil.success(hashMap,"MSG1",200);			
+		} catch (Exception e) {
+			return MessageUtil.error("MSG6",500);
+		}
+	}
+	
+	
+}

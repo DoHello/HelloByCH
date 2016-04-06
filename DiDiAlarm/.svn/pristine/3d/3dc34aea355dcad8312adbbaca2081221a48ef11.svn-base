@@ -1,0 +1,79 @@
+var p = [];
+var pl = [];
+var plc = [];
+var pla = [];
+var presL = allcity.Data.model; // 直接声明Array
+	var int1;
+	var int2;
+	var int3;
+	for (int1 = 0; int1 < presL.length; int1++) {
+		pl.push(presL[int1].province);
+		var plc1 = [];
+		var pla2 = [];
+		for (int2 = 0; int2 < presL[int1].city.length; int2++) {
+			plc1.push(presL[int1].city[int2].city);
+			var pla1 = [];
+			for (int3 = 0; int3 < presL[int1].city[int2].area.length; int3++) {
+				pla1.push(presL[int1].city[int2].area[int3].area);
+			}
+			if(pla1!=null){
+				pla2.push(pla1);
+			}
+	}
+	
+		if(plc1!=null){
+			plc.push(plc1);
+		}
+		if(pla2!=null){
+			pla.push(pla2);
+		}
+}
+var pres = pl; // 直接声明Array
+// 声明市
+var cities = plc;
+var areas = pla;
+// 设置一个省的公共下标
+var pIndex = -1;
+var preEle = document.getElementById("provinceID");
+var cityEle = document.getElementById("cityID");
+var areaEle = document.getElementById("areaID");
+// 先设置省的值
+for (var i = 0; i < pres.length; i++) {
+	// 声明option.<option value="pres[i]">Pres[i]</option>
+	var op = new Option(pres[i], i);
+	// 添加
+	preEle.options.add(op);
+}
+function chg(obj) {
+	if (obj.value == -1) {
+		cityEle.options.length = 0;
+		areaEle.options.length = 0;
+	}
+	// 获取值
+	var val = obj.value;
+	pIndex = obj.value;
+	// 获取ctiry
+	var cs = cities[val];
+	// 获取默认区
+	var as = areas[val][0];
+	// 先清空市
+	cityEle.options.length = 0;
+	areaEle.options.length = 0;
+	for (var i = 0; i < cs.length; i++) {
+		var op = new Option(cs[i], i);
+		cityEle.options.add(op);
+	}
+	for (var i = 0; i < as.length; i++) {
+		var op = new Option(as[i], i);
+		areaEle.options.add(op);
+	}
+}
+function chg2(obj) {
+	var val = obj.selectedIndex;
+	var as = areas[pIndex][val];
+	areaEle.options.length = 0;
+	for (var i = 0; i < as.length; i++) {
+		var op = new Option(as[i], i);
+		areaEle.options.add(op);
+	}
+}

@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+  <head>
+    <meta charset="utf-8">
+    <title>DerbySoft MetaSearch Manager</title>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta http-equiv="X-UA-Compatible" content="IE-9">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="mobile-web-app-capable" content="yes"> 
+    <meta name="renderer" content="webkit">
+    <meta name="format-detection" content="telephone=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, minimal-ui">
+    <!-- Bootstrap -->
+    <link href="css/bootstrap.css" rel="stylesheet">
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/Bina.css">   
+  </head>
+<body>
+	<nav id="main-nav" class="navbar navbar-default navbar-fixed-top" role="navigation">
+      <div class="container">
+        <div class="navbar-header">
+          <a href="javascript:;" type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar">    <!-- aria-expanded="false" aria-controls="navbar"-->
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </a>  
+          <a class="navbar-brand visible-xs logo" href="/Derby/siteHome.do?p=index"></a>        
+        </div>
+
+        <div id="navbar" class="collapse navbar-collapse navbar-scrol ">
+          <div class="row">              
+              <div class="col-lg-2 hidden-xs"><a class="navbar-brand logo" href="/Derby/siteHome.do?p=index"></a></div> 
+             <div class="col-lg-10">
+                <ul class="nav navbar-nav navigation">
+                  <li><a href="platform.html">Platform</a>
+                      <ul class="dropdown-menu" role="menu">
+                         <li><a href="platform.html#Nr3">Metasearch Management</a></li>
+                         <li><a href="platform.html#Nr2">Reporting and Analytics</a></li>
+                         <li><a href="platform.html#Nr4">Automated Bidding Manager</a></li>
+                         <!----------<li><a href="platform.html">More>></a></li>-------------->
+                      </ul>
+                  </li>
+                  <li ><a href="Solutions.html">Solutions</a>
+                    <ul class="dropdown-menu" role="menu">
+                         <li><a href="Solutions.html#tabNr1">Connect</a></li>
+                         <li><a href="Solutions.html#tabNr2">Cache</a></li>
+                         <li><a href="Solutions.html#tabNr3">Control</a></li>
+                         <!----------<li><a href="Solutions.html">More>></a></li>------------>
+                      </ul>
+                  </li>
+                  <li><a href="channel.html">Channels</a>
+                    <ul class="dropdown-menu" role="menu">
+                         <li><a href="channel.html">Google Hotel Ad</a></li>
+                         <li><a href="channel.html">TripAdvisor</a></li>
+                         <li><a href="channel.html">Kayak</a></li>
+                         <li><a href="channel.html">Trivago</a></li>
+                         <li><a href="channel.html">Qunar</a></li>
+                         <!----------<li><a href="channel.html">More>></a></li>------------->
+                    </ul>
+                  </li>             
+                  <li><a href="/Derby/siteHome.do?p=view">Resources</a>
+                    <ul class="dropdown-menu" role="menu">
+                         
+                         <li><a href="/Derby/siteHome.do?p=view#download">White Paper</a></li>
+                         <li><a href="/Derby/siteHome.do?p=view#information">News</a></li>
+                          <li><a href="/Derby/siteHome.do?p=view#EVENTS">Events</a></li>
+                         <li><a href="/Derby/siteHome.do?p=view#Q&A">Q&A</a></li>
+                         <!----------<li><a href="Resources2.html">More>></a></li>------------>
+                      </ul>
+                  </li>
+                  <li><a href="about.html">About Us</a>
+                    <ul class="dropdown-menu" role="menu">
+                         <li><a href="about.html">At A Glance</a></li>
+                         <li><a href="about.html#at2">Our Culture</a></li>
+                         <li><a href="about.html#at3">Our Vision</a></li>
+                         <!--------<li><a href="about.html">More>></a></li>---------->
+                      </ul>
+                  </li>
+                  <li><a href="message.html" >Contact</a>
+                    <ul class="dropdown-menu" role="menu">
+                         <li style="display:none;"><a href="index.html#contactus">Email</a></li>
+                         <li style="display:none;"><a href="message.html">Message</a></li>
+                         <li style="display:none;"><a href="message.html">Message</a></li>
+                         <li><a href="index.html#contactus">More>></a></li>
+                      </ul>
+                  </li>
+                  <li class="hidden-xs"><a href="login.html" class="icon-logo"><i class="loginTxt">Sign in</i></a></li>
+                </ul>
+             </div>            
+          </div>  
+        </div>
+      </div>
+  </nav>
+    <div class="container aboutCon aboutConOne">
+        <div class="aboutMain" id="at1">
+        	<h3>At a Glance</h3>
+            <div class="pic1"><img src="images/temp/about_img.jpg" ></div>
+            <p>DerbySoft is a global technology company serving hotel companies and the hospitality distribution industry since 2002.  The company continues to develop the next generation of online hotel distribution infrastructure:  a fair, effective, and enterprise-independent global distribution network (GDN) that enables travel products suppliers, distributors, and search engines to connect with each other while maintaining their own business models, connectivity preferences, and data logic; this network also enables powerful management functions and other value-added services for its participants.  In addition to its core technology, DPlatform, DerbySoft has developed various XML-based supplemental modules, including DHotelier, DAgency, TotalContent, and MetaSearch Manager. </p>
+
+            <p>DerbySoft's supply side partners include most of the top ten global hotel groups as well as the two leading third party Central Reservations Systems, smaller regional chains in Europe and China, and about one thousand Chinese independent properties that connect directly to DerbySoft's platform.  On the demand side, nearly all of the world's leading online travel agencies work with DerbySoft, and several of the largest global tour operators are also connected.</p>
+
+            <p>The company has a growing team of one hundred forty people in offices throughout the U.S., Europe, Japan, and China, is an active member of the Open Travel Alliance since 2002, and is an active member of HEDNA since 2007.</p>
+        </div>
+    </div>
+    <div class="white_k">
+    	<div class="container aboutCon">
+        	<div class="aboutMain" id="at2">
+                <h3>Our Culture</h3>
+                <div class="pic3"><img src="images/temp/about_img2.jpg"></div>
+                
+                    	<p>Each of us reflects our cultivation of a company culture that encourages creativity and embraces the notion that innovation drives growth for everyone. We believe in the power of intellect and the collective approach to problem-solving, but even more so, we believe that integrity comes above all else.</p>
+
+                    	<p>Do the right thing... this simple notion pervades our company and affects how we treat each other and everyone with whom we come into contact.</p>
+
+                    	<p>From your very first contact with DerbySoft, we believe you will find us to be refreshingly transparent and full of respect for our colleagues, our partners, and our competitors. No single organization can be everything to everyone, and we don't pretend otherwise--we know our areas of strength and choose to focus on them rather than chasing every possible opportunity.</p>
+                  
+            </div>
+        </div>
+    </div>
+    <div class="container aboutCon">
+    	<div class="aboutMain" id="at3">
+        	<h3>Our Vision</h3>
+            <div class="pic3"><img src="images/temp/about_img3.jpg"></div>
+            <p>We believe that all travel companies will develop and maintain their own, non-standardized systems, and that their interconnection will form a Global Distribution Network, or GDN.  Our mission, our skillset, and our interest is in providing services that enable the formation of the GDN by overcoming connectivity challenges for our partners.</p>
+        </div>
+    </div>
+    <div class="white_k">
+    	<div class="container">
+            <div class="aboutMain">
+            	<h3>Why We Are Different</h3>
+               <div class="pic3"><img src="images/temp/about_img4.jpg"></div>
+                
+                    	<p>For all the promises of increased revenue, lower costs, reduced errors, and analytical power offered by computing technology, ultimately it's still a messy business.  We understand this.  Yes, we have the most elegant and well-designed infrastructure in the travel distribution industry, and yes, our software technology is at the forefront and well ahead of our competitors', but at the end of the day, it's how we interact with our customers that really matters.  Our informal motto within DerbySoft is "do the right thing."  When we're in a position to do something helpful and significant for a partner (or even a non-partner) without needing to charge for it, we gladly do so.  When we screw up, we take responsibility for it.  When you screw up and it impacts us, we do what we can to good-naturedly help you resolve the issue as quickly as possible for everyone's sake.  Technology may be our business and our strength, but we believe it is how our people interact with your people that truly sets us apart.</p>
+                    
+            </div>
+        </div>
+    </div>
+    
+    
+ <script src="js/require.js" data-main="js/main" ></script>
+</body>
+</html>

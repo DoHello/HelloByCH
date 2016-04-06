@@ -1,0 +1,178 @@
+package com.derbysoft.entity.cms;
+
+import java.io.Serializable;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
+import dy.hrtworkframe.annotation.Table;
+import dy.hrtworkframe.annotation.Temporary;
+@Table(name="gms_alarm_receive")
+public class GmsAlarmReceive implements Serializable{
+
+	/**
+	 * @fieldName: serialVersionUID
+	 * @fieldType: long
+	 * @Description: TODO
+	 */
+	private static final long serialVersionUID = 8040904155173135799L;
+	@JsonIgnore
+	private String alarmReceiveID;
+	@JsonIgnore
+	private String alarmRefuseID;
+	
+	private String alarmID;
+	@JsonIgnore
+	private String userID;
+	private String userName;
+	@JsonIgnore
+	private String companyID;
+	private String phone;
+	public String getPhone() {
+		return phone;
+	}
+	public void setPhone(String phone) {
+		this.phone = phone;
+	}
+	public String getCompanyID() {
+		return companyID;
+	}
+	public void setCompanyID(String companyID) {
+		this.companyID = companyID;
+	}
+	@JsonIgnore
+	private String orgName;
+	private String refuseContext;
+	private String refusetext;
+	private String refuseType;
+	private String caseType;
+	@JsonIgnore
+	private String inputDate;
+	@JsonIgnore
+	private String ischeack;
+	private String status;
+	@JsonIgnore
+	private String addressID;
+	private String addressName;
+	private String longitude;
+	private String latitude;
+	@Temporary
+	@JsonIgnore
+	private String tokenID;
+
+	@Temporary
+	private int alarmNum;
+	public int getAlarmNum() {
+		return alarmNum;
+	}
+	public void setAlarmNum(int alarmNum) {
+		this.alarmNum = alarmNum;
+	}
+	public String getTokenID() {
+		return tokenID;
+	}
+	public void setTokenID(String tokenID) {
+		this.tokenID = tokenID;
+	}
+	public String getRefusetext() {
+		return refusetext;
+	}
+	public void setRefusetext(String refusetext) {
+		this.refusetext = refusetext;
+	}
+	public String getCaseType() {
+		return caseType;
+	}
+	public void setCaseType(String caseType) {
+		this.caseType = caseType;
+	}
+	public String getAlarmReceiveID() {
+		return alarmReceiveID;
+	}
+	public void setAlarmReceiveID(String alarmReceiveID) {
+		this.alarmReceiveID = alarmReceiveID;
+	}
+	public String getAlarmRefuseID() {
+		return alarmRefuseID;
+	}
+	public void setAlarmRefuseID(String alarmRefuseID) {
+		this.alarmRefuseID = alarmRefuseID;
+	}
+	public String getAlarmID() {
+		return alarmID;
+	}
+	public void setAlarmID(String alarmID) {
+		this.alarmID = alarmID;
+	}
+	public String getUserID() {
+		return userID;
+	}
+	public void setUserID(String userID) {
+		this.userID = userID;
+	}
+	public String getUserName() {
+		return userName;
+	}
+	public void setUserName(String userName) {
+		this.userName = userName;
+	}
+	public String getOrgName() {
+		return orgName;
+	}
+	public void setOrgName(String orgName) {
+		this.orgName = orgName;
+	}
+	public String getRefuseContext() {
+		return refuseContext;
+	}
+	public void setRefuseContext(String refuseContext) {
+		this.refuseContext = refuseContext;
+	}
+	public String getRefuseType() {
+		return refuseType;
+	}
+	public void setRefuseType(String refuseType) {
+		this.refuseType = refuseType;
+	}
+	public String getInputDate() {
+		return inputDate;
+	}
+	public void setInputDate(String inputDate) {
+		this.inputDate = inputDate;
+	}
+	public String getIscheack() {
+		return ischeack;
+	}
+	public void setIscheack(String ischeack) {
+		this.ischeack = ischeack;
+	}
+	public String getStatus() {
+		return status;
+	}
+	public void setStatus(String status) {
+		this.status = status;
+	}
+	public String getAddressID() {
+		return addressID;
+	}
+	public void setAddressID(String addressID) {
+		this.addressID = addressID;
+	}
+	public String getAddressName() {
+		return addressName;
+	}
+	public void setAddressName(String addressName) {
+		this.addressName = addressName;
+	}
+	public String getLongitude() {
+		return longitude;
+	}
+	public void setLongitude(String longitude) {
+		this.longitude = longitude;
+	}
+	public String getLatitude() {
+		return latitude;
+	}
+	public void setLatitude(String latitude) {
+		this.latitude = latitude;
+	}
+}

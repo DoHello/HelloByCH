@@ -1,0 +1,235 @@
+package com.derbysoft.controller.sys;
+
+import java.util.List;
+import java.util.Map;
+
+import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.servlet.ModelAndView;
+
+import com.derbysoft.dao.cms.NewsDao;
+import com.derbysoft.entity.cms.Police;
+import com.derbysoft.entity.sys.SYS_Category;
+import com.derbysoft.entity.sys.SYS_Company;
+import com.derbysoft.entity.sys.SYS_User;
+import com.derbysoft.service.cms.DateService;
+
+import dy.hrtworkframe.controller.base.BaseController;
+import dy.hrtworkframe.dao.BaseDaoImpl;
+import dy.hrtworkframe.db.SQLUtil;
+import dy.hrtworkframe.entity.Pager;
+import dy.hrtworkframe.exception.CustomerException;
+import dy.hrtworkframe.util.Const;
+import dy.hrtworkframe.util.ExportUtils;
+import dy.hrtworkframe.util.MessageUtil;
+import dy.hrtworkframe.util.PageData;
+import dy.hrtworkframe.util.UUIDUtil;
+
+@Transactional
+@Controller("company")
+@RequestMapping("company.do")
+public class CompanyController extends BaseController{
+
+	@Autowired
+	public BaseDaoImpl baseDaoImpl;
+	@Autowired
+	public DateService dateService;
+	
+	@Resource(name="newsDao")
+	private NewsDao newsDao;
+	
+	@RequestMapping(params="p=view")
+	public ModelAndView showListView(HttpSession session,@RequestParam("moduleID") String moduleID) throws Exception {
+		SYS_User user = (SYS_User) session.getAttribute(Const.SESSION_USER);
+		PageData pd = getPageData();
+		try {
+			//获取用户权限按钮
+			
+			pd.put("userbutton", dateService.findAuthority(user, moduleID));
+			mv.addObject("model", pd);
+			mv.setViewName("/system/company/system_company_view");
+		} catch (Exception e) {
+			return MessageUtil.exception(user, mv, e);
+		}
+		return MessageUtil.success(mv);
+	}
+	
+	@RequestMapping(params = "p=add")
+	public @ResponseBody Map<String,Object> add(@ModelAttribute SYS_Company  entity, HttpSession session) {
+		SYS_User user = (SYS_User) session.getAttribute(Const.SESSION_USER);
+		try {
+			if(entity.getCompanyName()==null||"".equals(entity.getCompanyName())||
+					entity.getAddress()==null||"".equals(entity.getAddress())){
+				throw new CustomerException("请填写内容后提交");
+			}
+			String get32uuid = UUIDUtil.get32UUID();
+			entity.setCompanyID(get32uuid);
+			//entity.setStatus(DataStatusEnum.TAKE_EFFECT.getValue());
+			entity.setCreateMan(user.getRealName());
+			Police police = new Police();
+			police.setPolice(entity.getCompanyName());	
+			police.setPoliceID(get32uuid);
+			baseDaoImpl.insert(police);
+			baseDaoImpl.insert(entity);
+		} catch (Exception e) {
+			return MessageUtil.exception(user, e);
+		}
+		
+		return MessageUtil.success();
+	}
+	
+	
+	@RequestMapping(params = "p=eyeView")
+	public ModelAndView showEyeView(SYS_Company entity, HttpSession session) {
+		SYS_User user = (SYS_User) session.getAttribute(Const.SESSION_USER);
+		pd = getPageData();
+		SYS_Company sys_Company2 = new SYS_Company();
+		sys_Company2.setCompanyID(entity.getCompanyID());
+		try {
+			List<SYS_Company> query = baseDaoImpl.query(sys_Company2);
+			SYS_Company sys_Company = query.get(0);
+			pd.put("entity", sys_Company);
+			mv.addObject("model", pd);
+			mv.setViewName("/system/company/system_company_eye");
+			
+		} catch (Exception e) {
+			return MessageUtil.exception(user, mv, e);
+		}
+		
+		return MessageUtil.success(mv);
+	}
+	
+	
+
+	
+	
+	@RequestMapping(params = "p=showAddView")
+	public ModelAndView showAddView(@ModelAttribute SYS_Company entity, HttpSession session) {
+		SYS_User user = (SYS_User) session.getAttribute(Const.SESSION_USER);
+		try {
+			List<SYS_Category> categories = baseDaoImpl.query(SYS_Category.class);
+			mv.addObject("model", getPageData().put("category", categories));
+			mv.setViewName("/system/company/system_company_add");
+		} catch (Exception e) {
+			return MessageUtil.exception(user, mv, e);
+		}
+		
+		return MessageUtil.success(mv);
+	}
+	
+	
+	
+	@RequestMapping(params = "p=edit")
+	public @ResponseBody Map<String,Object> edit(@ModelAttribute SYS_Company entity, HttpSession session) throws Exception {
+		SYS_User user = (SYS_User) session.getAttribute(Const.SESSION_USER);
+		try {
+			if(entity.getCompanyName()==null||"".equals(entity.getCompanyName())||
+					entity.getAddress()==null||"".equals(entity.getAddress())){
+				throw new CustomerException("请填写内容后提交");
+			}
+				baseDaoImpl.update(entity);
+				Police police = new Police();
+				police.setPolice(entity.getCompanyName());
+				police.setPoliceID(entity.getCompanyID());
+				baseDaoImpl.update(entity);
+				baseDaoImpl.update(police);
+		} catch (Exception e) {
+			return MessageUtil.exception(user, e);
+		}
+		return MessageUtil.success();
+	}
+	
+	
+	@RequestMapping(params = "p=del")
+	public @ResponseBody Map<String,Object> del(@ModelAttribute SYS_Company entity, HttpSession session) {
+		SYS_User user = (SYS_User) session.getAttribute(Const.SESSION_USER);
+		try {
+			
+			Police police = new Police();
+			police.setPoliceID(entity.getCompanyID());
+			baseDaoImpl.delete(entity);
+			baseDaoImpl.delete(police);
+		} catch (Exception e) {
+			return MessageUtil.exception(user, e);
+		}
+		
+		return MessageUtil.success();
+	}
+	
+	
+	@SuppressWarnings("deprecation")
+	@RequestMapping(params = "p=find")
+	public @ResponseBody Pager find( Pager pager, HttpSession session,
+			HttpServletRequest request, HttpServletResponse response) {
+		try {
+			String w = "companyName like '%" + pager.getParameters().get("searchText") + "%'"  + SQLUtil.getWhereClause(pager);
+
+				if (pager.getIsExport()) {
+					if (pager.getExportAllData()) {
+						pager.setExportDatas(newsDao.query(SQLUtil.getQuerySQL(SYS_Company.class)));
+					}
+					try {
+						ExportUtils.export(request, response, pager);
+					} catch (Exception e) {
+						e.printStackTrace();
+					}
+					return null;
+				}
+			
+				if (pager.getPageSize() == 0) {
+					
+					String sql = SQLUtil.getQuerySQL(SYS_Company.class) + " where " + w;
+					pager.setExhibitDatas(newsDao.query(SYS_Company.class, sql));
+					
+				} else {
+					
+					//pager.setAdvanceQuerySorts(SortUtil.sortBuild1("joined", "desc"));
+					newsDao.queryCount(pager, SYS_Company.class, w);
+					newsDao.queryPager(pager, SYS_Company.class, w);
+					pager.setIsSuccess(true);
+				}
+				
+				if (pager.getIsExport()) {
+					if (pager.getExportAllData()) {
+						pager.setExportDatas(newsDao.query(SQLUtil.getQuerySQL(SYS_Company.class)));
+					}
+					try {
+						ExportUtils.export(request, response, pager);
+					} catch (Exception e) {
+						e.printStackTrace();
+					}
+					return null;
+				}
+			
+				if (pager.getPageSize() == 0) {
+					
+					String sql = SQLUtil.getQuerySQL(SYS_Company.class) + " where " + w;
+					pager.setExhibitDatas(newsDao.query(SYS_Company.class, sql));
+					
+				} else {
+					
+					//pager.setAdvanceQuerySorts(SortUtil.sortBuild1("joined", "desc"));
+					newsDao.queryCount(pager, SYS_Company.class, w);
+					newsDao.queryPager(pager, SYS_Company.class, w);
+					pager.setIsSuccess(true);
+				}
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+			pager.setIsSuccess(false);
+		}
+		
+		pager.setIsSuccess(true);
+		return pager;
+	}
+}

@@ -1,0 +1,105 @@
+@charset "utf-8";
+.wrap{
+	width: 100%;
+    position: relative;
+    margin: 0 auto;
+    max-width: 640px;
+}
+
+/*新闻列表模板页*/
+.backhome-nav{
+	height: 4.5rem;
+	line-height: 4.5rem;
+	font-size: 1.5rem;
+	color: #4a5f89;
+	text-align:center;
+	position: relative;
+	border-bottom: 1px solid #ccc;
+}
+.backhome-nav .go-back{
+	display: inline-block;
+	width: 2.8rem;
+	height: 2.7rem;
+	background:url(../images/icon-back.png) no-repeat center center;
+	background-size: 2.7rem 2.7rem;
+	position: absolute;
+    left: 1rem;
+    top: 1.3rem;
+}
+.backhome-nav .go-home{
+	display: inline-block;
+	width: 2rem;
+	height: 1.95rem;
+	background:url(../images/icon-home.png) no-repeat center center;
+	background-size: 2rem 1.95rem;
+	position: absolute;
+	right: 1rem;
+    top: 1.3rem;
+}
+.details-content{
+	padding:0 1rem 2rem;
+}
+.details-content .title{
+	font-size: 2rem;
+	color: #000;
+	padding:2rem 0 1.25rem;
+}
+.details-content .subtitle{
+	font-size: 1.6rem;
+	line-height: 2.75rem;
+	color: rgba( 51, 51, 51, 0.8 );
+	padding-bottom: 1.2rem;
+}
+.details-content .date{
+	font-size: 1.4rem;
+	color: rgb( 0, 0, 0 );
+	padding-bottom: 1rem;
+	position: relative;
+	font-weight: lighter;
+}
+.details-content .date .clock{
+	display: inline-block;
+	width: 1.55rem;
+	height: 1.52rem;
+	margin-right: 1rem;
+	background:url(../images/icon-clock.png) no-repeat center center;
+	background-size: 1.5rem 1.5rem;
+	vertical-align: middle; 
+}
+.details-content .pic{
+	margin:0 auto;
+	padding-bottom: 1.5rem;
+}
+.details-content .pic img{
+	width:100%;
+	height: auto;
+}
+.details-content p{
+	font-size: 1.6rem;
+	color: rgba( 51, 51, 51, 0.8 );
+	line-height: 2.5rem;
+	padding-bottom: 2rem;
+	text-indent:2em;
+	font-weight: lighter;
+}
+
+/* 大屏 ----------- */
+@media only screen 
+and (min-device-width : 450px) 
+and (max-device-width : 750px) 
+{
+	.banWrap{
+		width:400px;
+	}
+	.banWrap a{
+		
+	}
+	.price{
+		width:180px;
+		height:65px;
+		background:url(../images/vip_pricebg.jpg) no-repeat;
+		background-size:180px 65px;
+	}
+}
+
+

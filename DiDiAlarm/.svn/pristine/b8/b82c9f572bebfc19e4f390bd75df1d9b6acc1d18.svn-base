@@ -1,0 +1,113 @@
+<%@ page language="java" import="java.util.*" pageEncoding="UTF-8"%>
+<%@ page language="java" import="com.derbysoft.enums.*"%>
+<%@ page language="java" import="dy.hrtworkframe.util.*"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content="" />
+    <meta name="author" content="marc" />
+    <title>滴滴报警</title>
+    <link href="css/jquery-ui.css" rel="stylesheet" type="text/css">
+    <link href="css/myCss.css" rel="stylesheet" type="text/css">
+</head>
+<body>
+    <div class="Wrapper c-s">
+        <div class="menu">
+            <div class="menu-icon">
+                <img src="images/menu-icon.png" alt="" />
+                <span>滴滴报警－大数据后台</span>
+            </div>
+            <ul class="menu-list">
+                <li><a href="##" class="on">所有案件</a></li>
+                <li><a href="##">抢劫</a></li>
+                <li><a href="##">抢夺</a></li>
+                <li><a href="##">盗窃</a></li>
+                <li><a href="##">治安纠纷</a></li>
+                <li><a href="##">打架斗殴</a></li>
+                <li><a href="##">杀人</a></li>
+                <li><a href="##">恐爆案件</a></li>
+                <li><a href="##">传统诈骗</a></li>
+                <li><a href="##">电信网络诈骗</a></li>
+                <li><a href="##">其它案件</a></li>
+            </ul>
+        </div>
+        <div class="main">
+            <div class="search">
+                <ul>
+                    <li><input name="" type="text" class="int-con fl" id="datepickerstart" readonly value="2016-05-12"></li>
+                    <li>一</li>
+                    <li><input name="" type="text" class="int-con fl" id="datepickerend" readonly value="2016-06-8"></li>
+                    <li><a href="##">查询</a></li>
+                </ul>
+            </div>
+            <div class="charts">
+                <div class="chart-11" id="chart-11"></div>
+            </div>
+        </div>
+    </div>
+
+
+    <script src="js/jquery-1.11.0.min.js"></script>
+    <script src="js/jquery-ui-1.9.2.custom.js"></script>
+<!--
+    <script type="text/javascript" src="js/data.js"></script>
+-->
+    <script src="js/echarts.min.js"></script>
+    <script src="js/myCharts6.js"></script>
+    <script src="js/myJs.js"></script>
+        <script type="text/javascript">
+    
+    //通用方法 
+     
+
+	
+   //var ajChart = echarts.init(document.getElementById('chart-03'));// 指定图表的配置项和数据
+   //var ajChart1 = echarts.init(document.getElementById('chart-04'));// 指定图表的配置项和数据
+  var myChart11 = echarts.init(document.getElementById('chart-11'));// 指定图表的配置项和数据
+
+  
+	
+debugger;
+     var data;
+    $.ajax({
+      type: "POST",
+      url: "date.do?p=alarmAlarmstAtisticsView",
+      data:$("#charts").serialize(),
+      async: false,
+      success: function(result){
+      //alert(result.docketCase.value});
+      alert(result.call.value);
+     // $("#call").attr("text",result.call.value);
+     $(".call").text(result.call.value);
+     $(".windCase").text(result.windCase.value);
+     $(".cheack").text(result.cheack.value);
+     $(".docketCase").text(result.docketCase.value);
+     $(".receive").text(result.receive.value);
+     
+      alert(JSON.stringify(result.call));
+      	 data = result;
+       }
+
+  }) ; 
+  
+  getEchartsData(
+    {
+    name:"案件总数",
+    data:data,
+    echarts11:myChart11,     
+    }
+    ); 
+    
+
+
+   
+
+    
+    </script>
+</body>
+</html>

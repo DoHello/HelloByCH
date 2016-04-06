@@ -1,0 +1,15 @@
+# SQL 数据源配置
+JDBC.URL=jdbc:mysql://localhost:3306/db_derby
+JDBC.DriverClassName=com.mysql.jdbc.Driver
+JDBC.UserName=derby
+JDBC.Password=1qaz-pl,
+#文件上传下载
+FILE.uploadPath=userfile/
+
+Mail.toMail = metasearchmanager@derbysoft.com
+
+Mail.Form = metasearchsendmail@derbysoft.com
+
+Mail.password = metasearch(123
+
+Mail.stmpHost = mail.derbysoft.com

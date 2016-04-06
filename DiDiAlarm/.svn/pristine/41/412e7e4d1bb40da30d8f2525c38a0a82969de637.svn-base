@@ -1,0 +1,175 @@
+<%@ page language="java" import="java.util.*" pageEncoding="UTF-8"%>
+<%@ page language="java" import="com.derbysoft.enums.*"%>
+<%@ page language="java" import="dy.hrtworkframe.util.*"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content="" />
+    <meta name="author" content="marc" />
+    <title>滴滴报警</title>
+    <link href="css/jquery-ui.css" rel="stylesheet" type="text/css">
+    <link href="css/myCss.css" rel="stylesheet" type="text/css">
+</head>
+<body>
+    <div class="Wrapper a-a-s">
+        <div class="menu">
+            <div class="menu-icon">
+                <img src="images/menu-icon.png" alt="" />
+                <span>滴滴报警－大数据后台</span>
+            </div>
+            
+             <ul class="menu-list" > 
+             
+            <li onclick="create();"><a href="##" class="on" id="0">所有案件</a></li>
+            <c:forEach var="obj" items="${model.type}">
+            <li onclick="create();" ><a href="##" id="${obj.companyID}">${obj.companyName}</a></li>
+            </c:forEach>
+            </ul> 
+        </div>
+        <div class="main">
+            <div class="search">
+                <ul>
+                    <li><input name="" type="text" class="int-con fl" id="datepickerstart" readonly value=""></li>
+                    <li>一</li>
+                    <li><input name="" type="text" class="int-con fl" id="datepickerend" readonly value=""></li>
+                    <li onclick="create();" ><a href="##" >查询</a></li>
+                </ul>
+            </div>
+            <div class="charts">
+                <div class="chart-06" id="chart-06"></div>
+                <div class="charts-tit">
+                    <span><em></em>接警<i class="receive"></i></span>
+                    <span><em></em>报警<i class="call"></i></span>
+                </div>
+                <div class="chart-07" id="chart-07"></div>
+                <div class="charts-tit chart07-tit">
+                    <span><em></em>备案<i class="cheack"></i></span>
+                     <span><em></em>接警<i class="receive"></i></span>
+                    
+                </div>
+                <div class="chart-08" id="chart-08"></div>
+                <div class="charts-tit chart08-tit">
+                    <span><em></em>立案<i class="docketCase"></i></span>
+                    <span><em></em>备案<i class="cheack"></i></span>
+                </div>
+                <div class="chart-09" id="chart-09"></div>
+                <div class="charts-tit chart09-tit">
+                    <span><em></em>结案<i class="windCase"></i></span>
+                    <span><em></em>立案<i class="docketCase"></i></span>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+
+    <script src="js/jquery-1.11.0.min.js"></script>
+    <script src="js/jquery-ui-1.9.2.custom.js"></script>
+<!--
+    <script type="text/javascript" src="js/data.js"></script>
+-->
+    <script src="js/echarts.min.js"></script>
+    <script src="js/myCharts4.js"></script>
+    <script src="js/myJs.js"></script>
+    <script type="text/javascript">
+    
+    //通用方法 
+     
+
+	
+   //var ajChart = echarts.init(document.getElementById('chart-03'));// 指定图表的配置项和数据
+   //var ajChart1 = echarts.init(document.getElementById('chart-04'));// 指定图表的配置项和数据
+  var myChart06 = echarts.init(document.getElementById('chart-06'));// 指定图表的配置项和数据
+  var myChart07 = echarts.init(document.getElementById('chart-07'));// 指定图表的配置项和数据
+  var myChart08 = echarts.init(document.getElementById('chart-08'));// 指定图表的配置项和数据
+  var myChart09 = echarts.init(document.getElementById('chart-09'));// 指定图表的配置项和数据
+
+    var data;
+    $.ajax({
+      type: "POST",
+      url: "date.do?p=alarmAlarmstAtisticsView",
+      data:$("#charts").serialize(),
+      async: false,
+      success: function(result){
+      //alert(result.docketCase.value});
+     // alert(result.call.value);
+     // $("#call").attr("text",result.call.value);
+     $(".call").text(result.call.value);
+     $(".windCase").text(result.windCase.value);
+     $(".cheack").text(result.cheack.value);
+     $(".docketCase").text(result.docketCase.value);
+     $(".receive").text(result.receive.value);
+     
+      
+      	 data = result;
+       }
+
+  }) ; 
+  getEchartsData(
+    {
+    name:"案件总数",
+    data:data,
+    echarts06:myChart06,
+    echarts07:myChart07,
+    echarts08:myChart08,
+    echarts09:myChart09,       
+    }
+    ); 
+    
+
+     function create(){    
+    var datepickerstart=$("#datepickerstart").val();
+    var datepickerend=$("#datepickerend").val();
+    var type=$(".on").attr("id");
+    
+    var myChart06 = echarts.init(document.getElementById('chart-06'));// 指定图表的配置项和数据
+  var myChart07 = echarts.init(document.getElementById('chart-07'));// 指定图表的配置项和数据
+  var myChart08 = echarts.init(document.getElementById('chart-08'));// 指定图表的配置项和数据
+  var myChart09 = echarts.init(document.getElementById('chart-09'));// 指定图表的配置项和数据
+
+    var data;
+    $.ajax({
+      type: "POST",
+      url: "date.do?p=alarmAlarmstAtisticsView&datepickerstart="+datepickerstart+"&datepickerend="+datepickerend+"&type="+type,
+      data:$("#charts").serialize(),
+      async: false,
+      success: function(result){
+      //alert(result.docketCase.value});
+  
+     // $("#call").attr("text",result.call.value);
+     $(".call").text(result.call.value);
+     $(".windCase").text(result.windCase.value);
+     $(".cheack").text(result.cheack.value);
+     $(".docketCase").text(result.docketCase.value);
+     $(".receive").text(result.receive.value);
+     
+      
+      	 data = result;
+       }
+
+  }) ; 
+  getEchartsData(
+    {
+    name:"案件总数",
+    data:data,
+    echarts06:myChart06,
+    echarts07:myChart07,
+    echarts08:myChart08,
+    echarts09:myChart09,       
+    }
+    ); 
+    
+  
+    } 
+
+   
+
+    
+    </script>
+</body>
+</html>

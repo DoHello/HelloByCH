@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+  <head>
+    <meta charset="utf-8">
+    <title>DerbySoft MetaSearch Manager</title>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta http-equiv="X-UA-Compatible" content="IE-9">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="mobile-web-app-capable" content="yes"> 
+    <meta name="renderer" content="webkit">
+    <meta name="format-detection" content="telephone=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, minimal-ui">
+    <!-- Bootstrap -->
+    <link href="css/bootstrap.css" rel="stylesheet">
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/Bina.css">  
+    <style type="text/css">
+	.newsDetailedCon h4{border-color:#f1f1f1; color:#666; line-height:24px; padding-left:0px;}
+	</style>
+  </head>
+<body>
+	<nav id="main-nav" class="navbar navbar-default navbar-fixed-top" role="navigation">
+      <div class="container">
+        <div class="navbar-header">
+          <a href="javascript:;" type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar">    <!-- aria-expanded="false" aria-controls="navbar"-->
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </a>  
+          <a class="navbar-brand visible-xs logo" href="index.html"></a>        
+        </div>
+
+        <div id="navbar" class="collapse navbar-collapse navbar-scrol ">
+          <div class="row">              
+              <div class="col-lg-2 hidden-xs"><a class="navbar-brand logo" href="index.html"></a></div> 
+             <div class="col-lg-10">
+                <ul class="nav navbar-nav navigation">
+                  <li><a href="platform.html">Platform</a>
+                      <ul class="dropdown-menu" role="menu">
+                         <li><a href="platform.html#Nr3">Metasearch Management</a></li>
+                         <li><a href="platform.html#Nr2">Reporting and Analytics</a></li>
+                         <li><a href="platform.html#Nr4">Automated Bidding Manager</a></li>
+                         <!----------<li><a href="platform.html">More>></a></li>----------->
+                      </ul>
+                  </li>
+                  <li ><a href="Solutions.html">Solutions</a>
+                    <ul class="dropdown-menu" role="menu">
+                         <li><a href="Solutions.html#tabNr1">Connect</a></li>
+                         <li><a href="Solutions.html#tabNr2">Cache</a></li>
+                         <li><a href="Solutions.html#tabNr3">Control</a></li>
+                         <!----------<li><a href="Solutions.html">More>></a></li>------------>
+                      </ul>
+                  </li>
+                  <li><a href="channel.html">Channels</a>
+                    <ul class="dropdown-menu" role="menu">
+                         <li><a href="channel.html">Google Hotel Ad</a></li>
+                         <li><a href="channel.html">TripAdvisor</a></li>
+                         <li><a href="channel.html">Kayak</a></li>
+                         <li><a href="channel.html">Trivago</a></li>
+                         <li><a href="channel.html">Qunar</a></li>
+                         <!----------<li><a href="channel.html">More>></a></li>------------>
+                    </ul>
+                  </li>             
+                  <li><a href="Resources2.html">Resources</a>
+                    <ul class="dropdown-menu" role="menu">
+                         
+                         <li><a href="Resources2.html#download">White Paper</a></li>
+                         <li><a href="Resources2.html#information">News</a></li>
+                         <!----------<li><a href="Resources2.html">More>></a></li>--------->
+                      </ul>
+                  </li>
+                  <li><a href="about.html">About Us</a>
+                    <ul class="dropdown-menu" role="menu">
+                         <li><a href="about.html">At A Glance</a></li>
+                         <li><a href="about.html#at2">Our Culture</a></li>
+                         <li><a href="about.html#at3">Our Vision</a></li>
+                         <!----------<li><a href="about.html">More>></a></li>-------->
+                      </ul>
+                  </li>
+                  <li><a href="message.html" >Contact</a>
+                    <ul class="dropdown-menu" role="menu">
+                         <li style="display:none;"><a href="index.html#contactus">Email</a></li>
+                         <li style="display:none;"><a href="message.html">Message</a></li>
+                         <li style="display:none;"><a href="message.html">Message</a></li>
+                         <li><a href="index.html#contactus">More>></a></li>
+                      </ul>
+                  </li>
+                  <li class="hidden-xs"><a href="login.html" class="icon-logo"><i class="loginTxt">Sign in</i></a></li>
+                </ul>
+             </div>            
+          </div>  
+        </div>
+      </div>
+  </nav>
+    <div class="container newsDetailedCon">
+    	<h3 class="Toptitle" style="width:170px;">ARTICLE</h3>
+        <div class="white_k">
+        	<h4 class="longTitle">Opportunities and challenges for metasearch marketing with hotels</h4>
+            <div class="newsNr">
+               <p>As hotels continue their efforts to keep up with latest and greatest in electronic distribution, the three hottest topics continue to be mobile, social media and metasearch.</p>
+               <p>NB: This article is written by Wei Xia (VP of new products and services) and Quentin Moores (director of metaSearch business development) from DerbySoft.</p>
+               <p>All three have one common thread we haven't seen for many years. The ability to target and win direct consumers back to the front door of hotelbrand.com.</p>
+               <p>For suppliers, targeting, acquiring and retaining a potentially brand loyal customer is an opportunity that's been missing since the first generation of internet booking engines rolled out in the pre 9/11 era of online marketing.</p>
+               <p>For consumers, metasearch now provides a consolidated view of search results that compare travel products across OTAs and hotel brand owners giving a fast and comprehensive view of product choice and almost instantaneous purchasing options.</p>
+               <p>According to PhoCusWright, no less than one third of online shoppers are now using metaSearch sites as a primary source of travel shopping.</p>
+               <p>As a result, that presents some specific challenges and fantastic opportunities for suppliers vying for that all-important click on the "purchase" button.</p>
+               <p class="center"><img src="images/zhifangtu1.jpg"/></p>
+               <p>However, According to PhoCusWright, only 1% of all shoppers to hotel brand websites originate from a metasearch engine.</p>
+               <p>This means that hotel brands have not capitalized on a tremendous amount of selling opportunities.</p>
+               <p>For example, in a random search for hotels in New York City on Google we have randomly selected one hotel:</p>
+               <p class="center"><img src="images/webpage.jpg"/></p>
+               <p>However the option to purchase a room from the hotel is non-existent. OTAs are the only option.</p>
+               <p>Metaphorically speaking the guest has rolled up to the front door of the hotel, cash in hand, and nobody at the property is either ready or willing to take their money.</p>
+               <P>Naturally there are plenty of other channels who will. So this presents two questions we need to solve.</P>
+           
+               <ul style="margin:20px 0;">
+                 <Li>•	How does the hotel brand occupy those buying opportunities?</Li>
+                 <li>•	How does one achieve this goal in a cost-effective manner?</li>
+               </ul>
+               <h4>Three specific challenges to solve</h4>
+               <h4>1. Connectivity (or the lack of it)</h4>
+               <p>Many hotel suppliers are not even connected to metasearch engines yet, partly because this is a complex, time consuming and expensive process.</p>
+               <p>There are a lot of metasearch sites and supplier websites in the world, all of which need connectivity to source ARI (availability, rates and inventory).</p>
+               <p>This in turn results in a lot of different APIs, languages, currencies and other complex factors to deal with, not to mention all the various business models like CPC, CPA and bidding.</p>
+               <p>There are a lot of vendors for ARI connectivity, but not all vendors are created equal, and it really is a case of "buyer beware".</p>
+               <p>Some connections look great on a PowerPoint slide but often create more inefficiencies and than they solve, and can adversely affect the quality of data you are trying to present to that all important shopper.</p>
+               <h4>2. CRS overload</h4>
+               <p>Once the connectivity challenge is solved, each hotel partner is often left with then having to handle an enormous volume of shopping messages.</p>
+               <p>These transactions can overwhelm CRSs with very little conversion into booking revenue.</p>
+               <p>The overload also limits capacity for additional connections and in some extreme cases can affect mission critical processes like reservation processing.</p>
+               <p>Cashing can solve this shopping transaction dilemma. Caching is a technology that essentially mirrors the rate and availability status of a CRS in an external database.</p>
+               <p>This allows a shopping transaction from a metasearch channel to query the Cache without impacting the CRS.</p>
+               <p>However, caching is not a simple process. If the cache is not synchronized with CRS with enough frequency then the accuracy of rate and availability data will become "stale" and inaccurate.</p>
+               <p>If its synched too often, then the synchronization traffic will actually create as much of a load on CRS as the shopping volume you are trying to alleviate thus defeating the very purpose of the cache.</p>
+               <p>Therefore advanced caching technology is essential to balance the need to reduce traffic to the CRS while maintaining a consistently high degree of rate accuracy.</p>
+               <p>In solving the first two challenges, you will then face the third and greatest challenge.</p>
+               <h4>3. Control</h4>
+               <p>How to effectively manage and control your Metasearch marketing campaigns?</p>
+               <p>To understand if you are truly optimizing the marketing opportunities available on these metasearch channels you should be asking the following questions:</p>
+        
+               <ul style="margin:20px 0;">
+                 <li>•	Do you receive too many, too little or just enough clicks?</li>
+                 <li>•	Do you receive enough bookings and revenue?</li>
+                 <li>•	Are you reaching your conversion targets?</li>
+                 <li>•	What is your ROI? Are you reaching your ROI target?</li>
+               </ul>
+               <p>These are vital questions for any marketing executive, and while there are many options for keyword search marketing, there are not many options to effectively manage a metasearch marketing campaign today.</p>
+               <p>Most marketers and agencies still manually manage metasearch marketing campaigns.</p>
+               <p>It can take weeks to get reports from various Metasearch sites with different attributes and formats and then aggregate these into actionable data upon which to make campaign decisions.</p>
+               <p>By the time you find you are underperforming, weeks or even months have already passed and its too late to act upon.</p>
+               <p>Even after receiving reports, they may not include information detailed enough for you to pinpoint the problem and re-calibrate your campaign to optimize your ROI</p>
+               <p>Approximately three years ago, Google entered the hotel metasearch arena with the introduction of Google Hotel Price Ads (HPA) along with a number of Google products including:</p>
+              
+               <ul style="margin:20px 0;"">
+                 <li>•	Google Hotel Finder</li>
+                 <li>•	Google Maps</li>
+                 <li>•	Google+ Local</li>
+                 <li>•	Google Search</li>
+               </ul>
+               <p>All of these elements are available and suitable for desktop, tablet and, increasingly, mobile devices.</p>
+               <ul style="margin:20px 0;"">
+                 <li>•	Google HPA is a game-changer in many ways:</li>
+                 <li>•	Google caches all the rates on their database and requires at least 95% accuracy from all suppliers.</li>
+                 <li>•	Google introduced real-time bidding in metasearch. A supplier could bid the cost of a click based on many factors like room rate, length of stay, user country and more. You had the option to bid manually on a tool, or use a program through an API (Application Protocol Interface).</li>
+               </ul>
+               <p>Google sent daily reports through email or an API, which includes detailed information like clicks, cost, impression, position and other important attributes.</p>
+               <p>This process is extremely helpful for campaign management and optimization.</p>
+               <p>Since the introduction of Google HPA, more and more metasearch sites have introduced bidding, albeit in various formats, some such sites include TripAdvisor and Qunar.</p>
+               <p>With so many options for metasearch management, there were certainly a variety of opportunities available for savvy marketers to optimize their campaigns, but this also presented challenges for many hoteliers and other marketers.</p>
+               <p>One of those issues is that hoteliers are strangers to managing real-time bidding for metasearch marketing.</p>
+               <p>This is further complicated by the fact that HPA bidding, while the most sophisticated among all metasearch engines, is far more complex than ad-word bidding.</p>
+               <p>The upside to this is that either hotel suppliers are not getting enough click volume because of low bids, or that they are bidding too high for positions, which results in an inconsistent ROI.</p>
+               <p>Hotel suppliers and their agencies are having a hard time keeping up with the speed and complexity required to manage, track and report on Google HPA campaigns.</p>
+               <P>For more information on the subject of Google HPA, please see this Tnooz article.</P>
+               <p>NB: This article is written by Wei Xia (VP of new products and services) and Quentin Moores (director of metaSearch business development) from DerbySoft.</p>
+               <p>MetaSearch Manager by DerbySoft is the leading solution pioneering this arm of the metasearch industry. The platform provides advanced reporting and analytics, full control of your campaign at a granular level, automatic bidding, and campaign optimization. MetaSearch Manager can control your campaign across multiple MetaSearch sites and advertising models all at once.</p>
+               <p><a href="http://www.MetaSearchManager.com">www.MetaSearchManager.com</a></p>
+               <p><a href="http://www.tnooz.com/article/metasearch-challenges-opportunities-hotels/">http://www.tnooz.com/article/metasearch-challenges-opportunities-hotels/</a></p>
+            </div>
+        	<div class="on_next clearfix">
+                <p>Prev：<a href="#">Ted Zhang, CEO and co-founder of DerbySoft, invited to discuss </a></p>
+                <p>Next: <a href="#">Ted Zhang, CEO and co-founder of DerbySoft, invited to discuss </a></p>
+                <a href="#" class="returns_bt">Back>></a>
+            </div>
+        </div>
+    </div>
+<script src="js/require.js" data-main="js/main" ></script>
+</body>
+</html>

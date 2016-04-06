@@ -1,0 +1,93 @@
+
+function getEchartsData(parmObject){
+	alert(parmObject.echarts10)
+	debugger;
+option10 = {
+    color:['#4daef2', '#f461b7'],
+    tooltip : {
+        trigger: 'axis'
+    },
+    legend: {
+        data:['男性','女性']
+    },
+    grid: {
+        top:'10%',
+        left: '10%',
+        right: '10%',
+        bottom: '20%',
+        containLabel: true
+    },
+    xAxis : [
+        {
+            type : 'category',
+            name:'年龄',
+            boundaryGap : false,
+            axisLine:{
+                lineStyle:{
+                    width: 1,
+                    color: "#19649a"
+                }
+            },
+            axisTick:{
+                show: false
+            },
+            splitLine:{
+                show: false
+            },
+            axisLabel:{
+                textStyle:{
+                    color: "#19649a"
+                }
+            },
+            data : [0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15]
+        }
+    ],
+    yAxis : [
+        {
+            type: 'value',
+            axisLine:{
+                lineStyle:{
+                    width: 1,
+                    color: "#19649a"
+                }
+            },
+            axisLabel:{
+                textStyle:{
+                    color: "#19649a"
+                }
+            },
+            axisTick:{
+                show: false
+            },
+            splitLine:{
+                lineStyle:{
+                    type: 'dashed',
+                    color: '#d1e1ee'
+                }
+            }
+
+        }
+    ],
+    series : [
+        {
+            name:'男性',
+            type:'line',
+            showSymbol: false,
+            smooth:true,
+            areaStyle: {normal: {opacity:'0.2'}},
+            data:parmObject.data.manNum
+        },
+        {
+            name:'女性',
+            type:'line',
+            showSymbol: false,
+            smooth:true,
+            areaStyle: {normal: {opacity:'0.2'}},
+            data:parmObject.data.womNum
+        }
+    ]
+};
+parmObject.echarts10.setOption(option10);
+
+
+}

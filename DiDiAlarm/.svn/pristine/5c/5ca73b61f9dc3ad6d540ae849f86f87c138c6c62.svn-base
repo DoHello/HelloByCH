@@ -1,0 +1,56 @@
+
+function getnima(Pro){
+
+	
+
+	
+for(var i = 0; i <Pro.Pro1.length; i++){
+	
+	
+option12 = {
+    color:['#4daef2','#ee92c6'],
+    tooltip: {
+        trigger: 'item',
+        formatter: "{a} <br/>{b}: {c} ({d}%)"
+    },
+    
+    series: [
+        {
+            name:'访问来源',
+            type:'pie',
+            selectedMode: 'single',
+            radius: ['10%', '70%'],
+            center:['50%','70%'],
+            label: {
+                normal: {
+                    position: 'inner',
+                    formatter: "{d}%",
+                    textStyle:{
+                        fontSize:20
+                    }
+                }
+            },
+            labelLine: {
+                normal: {
+                    show: false
+                }
+            },
+            itemStyle:{
+                normal:{
+                    borderColor: '#fff',
+                    borderWidth: 6
+                }
+            },
+            data:[
+                {value:Pro.Pro.peopleNum[i].womNum, name:'男性'},
+                {value:Pro.Pro.peopleNum[i].womNum, name:'女性'}
+            ]
+        }
+
+    ]
+};Pro.Pro1[i].setOption(option12);
+
+}
+}
+
+

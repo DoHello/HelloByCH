@@ -1,0 +1,387 @@
+package com.derbysoft.controller.service;
+
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+
+import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
+import javax.sound.sampled.AudioFileFormat;
+import javax.sound.sampled.AudioInputStream;
+import javax.sound.sampled.AudioSystem;
+import javax.sound.sampled.Clip;
+import javax.sound.sampled.LineUnavailableException;
+import javax.sound.sampled.UnsupportedAudioFileException;
+
+import javazoom.jl.decoder.Bitstream;
+import javazoom.jl.decoder.BitstreamException;
+import javazoom.jl.decoder.Header;
+
+import org.apache.commons.codec.digest.DigestUtils;
+import org.joda.time.DateTime;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+
+import com.derbysoft.entity.SystemInfo;
+import com.derbysoft.entity.cms.GmsAlarmCall;
+import com.derbysoft.entity.cms.Member;
+import com.derbysoft.entity.sys.SYS_Dic;
+import com.derbysoft.entity.sys.SYS_Itude;
+import com.derbysoft.entity.sys.SYS_User;
+import com.derbysoft.redis.service.UserService;
+import com.dy.entity.boss.BOSS_Company;
+
+import dy.hrtworkframe.controller.base.BaseController;
+import dy.hrtworkframe.dao.BaseDaoImpl;
+import dy.hrtworkframe.db.SQLUtil;
+import dy.hrtworkframe.entity.Enclosure;
+import dy.hrtworkframe.entity.MobilelocationEntity;
+import dy.hrtworkframe.entity.User;
+import dy.hrtworkframe.exception.CustomerException;
+import dy.hrtworkframe.util.CheckUtil;
+import dy.hrtworkframe.util.Const;
+import dy.hrtworkframe.util.MapSpaceUtil;
+import dy.hrtworkframe.util.MapUtils;
+import dy.hrtworkframe.util.MessageUtil;
+import dy.hrtworkframe.util.PageData;
+@Component
+@Controller("baseDaoController")
+public class BaseDaoController extends BaseController {
+
+	protected PageData pdapp = new PageData();
+//	protected String w;
+//	protected List<Object> args = getList();
+	@Resource(name = "baseDaoImpl")
+	protected BaseDaoImpl baseDaoImpl;
+//	public HttpServletRequest request = getRequest();
+	//iphone aud || android amr
+	protected static final String[] VOICE_TYPE = new String[] { ".mp3", ".aud", ".amr"};
+	protected static final String[] IMAGE_TYPE = new String[] { ".bmp", ".jpg", ".jpeg", ".gif", ".png" };
+	@Autowired
+	public SystemInfo systemInfo;
+	@Autowired
+	public UserService userService;
+	/**
+	 * 得到PageData
+	 */
+	public PageData getPageAppMData() {
+		pdapp = getPageAppData();
+		HttpServletRequest request = getRequest();
+//		pdapp.put(Const.SESSION_HAS_MEMBER, (Member) request.getSession()
+//				.getAttribute(Const.SESSION_HAS_MEMBER));
+		return pdapp;
+	}
+	public PageData getPageAppPData() {
+		pdapp = getPageAppData();
+		HttpServletRequest request = getRequest();
+//		pdapp.put(Const.SESSION_HAS_MEMBER, (SYS_User) request.getSession()
+//				.getAttribute(Const.SESSION_HAS_MEMBER));
+		return pdapp;
+	}
+	
+	public PageData getPageAppData() {
+		mv.clear();
+		pdapp = new PageData();
+		HttpServletRequest request = getRequest();
+//		pdapp.put("dic", request.getSession().getAttribute("dic"));
+//		pdapp.put("sex", request.getSession().getAttribute("sex"));
+//		pdapp.put("AlarmLevel", request.getSession().getAttribute("AlarmLevel"));
+//		pdapp.put("CallStatus", request.getSession().getAttribute("CallStatus"));
+//		pdapp.put("CaseType", request.getSession().getAttribute("CaseType"));
+//		pdapp.put("Cheack", request.getSession().getAttribute("Cheack"));
+//		pdapp.put("Level", request.getSession().getAttribute("Level"));
+//		pdapp.put("Navigation", request.getSession().getAttribute("Navigation"));
+//		pdapp.put("Status", request.getSession().getAttribute("Status"));
+//		pdapp.put("MeasUnit", request.getSession().getAttribute("MeasUnit"));
+		return pdapp;
+	}
+
+	public String getSql(String feild) {
+		return " 1=1 and " + feild + " = ? ";
+	}
+
+	public List<Object> getList() {
+		return new ArrayList<Object>();
+	}
+
+	// 返回在\\userfile\\voice\\2015\\08\\31\
+	public String getFilePath(String sourceFileName, HttpServletRequest request) {
+		String baseFolder = systemInfo.VOICEUPLOADPATH;// userfile
+		Date nowDate = new Date();
+		// yyyy/MM/dd
+		String fileFolder = systemInfo.VOICEUPLOADPATH
+				+ new DateTime(nowDate).toString("yyyy") + "/"
+				+ new DateTime(nowDate).toString("MM") + "/"
+				+ new DateTime(nowDate).toString("dd");
+//		File file = new File(request.getServletContext().getRealPath("/")
+//				+ fileFolder);
+		File file = new File(systemInfo.absoluteFile1
+				+ fileFolder);
+		fileFolder = fileFolder.replace("\\", "/");
+		if (!file.isDirectory()) {
+			// 如果目录不存在，则创建目录
+			file.mkdirs();
+		}
+		return fileFolder+"/";
+	}
+	
+	public String getFilePathOfImg(String sourceFileName, HttpServletRequest request) {
+		String baseFolder = systemInfo.IMGLOADPATH;// userfile
+		Date nowDate = new Date();
+		// yyyy/MM/dd
+		String fileFolder = systemInfo.VOICEUPLOADPATH
+				+ new DateTime(nowDate).toString("yyyy") + "/"
+				+ new DateTime(nowDate).toString("MM") +"/"
+				+ new DateTime(nowDate).toString("dd");
+//		File file = new File(request.getServletContext().getRealPath("/")
+//				+ fileFolder);
+		File file = new File(systemInfo.absoluteFile1
+				+ fileFolder);
+
+		fileFolder = (request.getServletContext().getRealPath("/")+ fileFolder).replace("\\", "/");
+
+		fileFolder = fileFolder.replace("\\", "/");
+
+		if (!file.isDirectory()) {
+			// 如果目录不存在，则创建目录
+			file.mkdirs();
+		}
+		return fileFolder+"/";
+	}
+	
+	
+	public String getImgPath(String sourceFileName, HttpServletRequest request){
+		String baseFolder = systemInfo.IMGLOADPATH;// userfile/img
+		Date nowDate = new Date();
+		// yyyy/MM/dd
+		String fileFolder = systemInfo.IMGLOADPATH
+				+ new DateTime(nowDate).toString("yyyy") + "/"
+				+ new DateTime(nowDate).toString("MM") + "/"
+				+ new DateTime(nowDate).toString("dd");
+//		File file = new File(request.getServletContext().getRealPath("/")
+//				+ fileFolder);
+		File file = new File(systemInfo.absoluteFile1
+				+ fileFolder);
+		fileFolder = fileFolder.replace("\\", "/");
+		if (!file.isDirectory()) {
+			// 如果目录不存在，则创建目录
+			file.mkdirs();
+		}
+		return fileFolder+"/";
+	}
+	public boolean getPoliceNum(GmsAlarmCall alarmCall){
+		return false;
+		
+	}
+	/**
+	 * 判断报警地点的警察距离列表,警察的地点是一个实时的动态地址,我们需要把这个地址放到redis中,便于实时查询
+	 * 获取一个根据距离排序的集合
+	 * @Title: getPolice 
+	 * @Description: TODO
+	 * @param longitude
+	 * @param latitude
+	 * @return
+	 * @return: List<SYS_User>
+	 */
+	public List<SYS_User> getPolice(GmsAlarmCall alarmCall){
+		try {
+			List<SYS_User> queryUsersAdress = userService.queryUsersAddress();
+			if(queryUsersAdress==null||queryUsersAdress.size()<=0){
+				return null;
+			}
+			Map m = new HashMap();
+//			List<Double> dous = new ArrayList<Double>();
+			List<SYS_User> users = new ArrayList<SYS_User>();
+			for (SYS_User sys_User : queryUsersAdress) {
+				if(sys_User!=null&&sys_User.getLongitude()!=null&&sys_User.getLatitude()!=null){
+				double distance = MapSpaceUtil.getDistance(Double.parseDouble(alarmCall.getLongitude()), Double.parseDouble(alarmCall.getLatitude()), Double.parseDouble(sys_User.getLongitude()), Double.parseDouble(sys_User.getLatitude()));
+//				dous.add(distance);
+				sys_User.setDistance(""+distance);
+				users.add(sys_User);
+				}
+			}
+			for (int i = 0; i < users.size() - 1; i++) {  
+	            for (int j = 1; j < users.size() - i; j++) {  
+	                SYS_User a;  
+	                if ((users.get(j - 1)).getDistance().compareTo(users.get(j).getDistance()) > 0) { 
+	                    a = users.get(j - 1);  
+	                    users.set((j - 1), users.get(j));  
+	                    users.set(j, a);  
+	                }  
+	            }  
+	        } 
+			return users;
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return null;
+	}
+	/**
+	 * 查询空闲警察
+	 * @Title: getPoliceByDegree 
+	 * @Description: TODO
+	 * @param alarmCall
+	 * @return
+	 * @return: List<SYS_User>
+	 * @throws Exception 
+	 */
+	public List<SYS_User> getPoliceByDegree(GmsAlarmCall alarmCall) throws Exception{
+		List<SYS_User> police = getPolice(alarmCall);
+		List l = new ArrayList();
+		if(police.size()<=0||police==null){
+			return null;
+		}
+		for (SYS_User sys_User : police) {
+			if(sys_User.getDegree()==null){
+				sys_User.setDegree("0");
+			}
+			if(Integer.parseInt(sys_User.getDegree())<Integer.parseInt(userService.getJpushNum())){
+				l.add(sys_User);
+				//增加次数
+				sys_User.setDegree(Integer.parseInt(sys_User.getDegree())+1+"");
+				userService.setUsersAddress(sys_User);
+			}
+		}
+		return l;
+	}
+	public void delPoliceDegree(SYS_User sys_User) throws Exception{
+		//减少次数
+		sys_User.setDegree(Integer.parseInt(sys_User.getDegree())-1+"");
+		userService.setUsersAddress(sys_User);
+	}
+	public static void main(String[] args) {
+		String reg15 = "^[1-9]\\d{7}((0\\d)|(1[0-2]))(([0|1|2]\\d)|3[0-1])\\d{3}$";
+		String reg18 = "^[1-9]\\d{5}[1-9]\\d{3}((0\\d)|(1[0-2]))(([0|1|2]\\d)|3[0-1])\\d{3}([0-9]|X)$";
+		String entity = "ddddd_1s!";
+		System.out.println(entity.matches("(?!^\\d+$)(?!^[a-zA-Z]+$)(?!^[_]+$).{6,20}"));
+		System.out.println(entity.matches("(?=[\\x21-\\x7e]+)[^\\w]+"));
+		System.out.println(entity.matches("[\\w]+"));
+		if (entity.matches("(?!^[0-9]$)(?!^[a-zA-Z]$)(?!^[_]$).{6,20}")) 
+		{
+			if(entity.matches("^(?=[\\x21-\\x7e]+)[^\\w]$")){
+				System.out.println("xxx");
+//				System.out.println((?=[\x21-\x7e]+)[^\w]);
+			}
+		}
+//		Date nowDate = new Date();
+//		// yyyy/MM/dd
+//		String fileFolder = "c:/"
+//				+ new DateTime(nowDate).toString("yyyy") + File.separator
+//				+ new DateTime(nowDate).toString("MM") + File.separator
+//				+ new DateTime(nowDate).toString("dd");
+//		File file = new File(fileFolder);
+//		fileFolder = fileFolder.replace("\\", "/");
+//		if (!file.isDirectory()) {
+//			// 如果目录不存在，则创建目录
+//			file.mkdirs();
+//		}
+//		System.out.println(fileFolder);
+//		double distance = MapSpaceUtil.getDistance(116.453729,39.936528,116.454772,39.936905);
+//		System.out.println(distance);
+//		if(distance<=0.2){
+//			System.out.println(distance);
+//		}
+	}
+	public boolean getPoliceWithPeople(GmsAlarmCall alarmCall,SYS_User sys_User){
+		double distance = MapSpaceUtil.getDistance(Double.parseDouble(alarmCall.getLongitude()), Double.parseDouble(alarmCall.getLatitude()), Double.parseDouble(sys_User.getLongitude()), Double.parseDouble(sys_User.getLatitude()));
+		if(distance<=0.2){
+			return true;
+		}
+		return false;
+	}
+	//判断该用户是否在指定区域内报警
+	public Boolean getSpace(GmsAlarmCall user) {
+		MobilelocationEntity entity = new  MobilelocationEntity();
+		entity.setLongitude(user.getLongitude());
+		entity.setLatitude(user.getLatitude());
+		String w = getSql("areaID");
+		List args1 = getList();
+//		args1.add("520111");//花溪区
+		args1.add("310115");//浦东新区
+		String sql = SQLUtil.getQuerySQL(SYS_Itude.class) + " where " + w;
+		if (baseDaoImpl.query(SYS_Itude.class, sql, args1.toArray()) == null) {
+			return false;
+		}
+		List<SYS_Itude> query = baseDaoImpl.query(SYS_Itude.class, sql, args1.toArray());
+		List<Enclosure> lists = new ArrayList<Enclosure>();
+		for (SYS_Itude sys_Itude : query) {
+			Enclosure e = new Enclosure();
+			e.setLongitude(Double.parseDouble(sys_Itude.getLongitude()));
+			e.setLatitude(Double.parseDouble(sys_Itude.getLatitude()));
+			lists.add(e);
+		}
+		return MapUtils.isInPolygon(entity, lists);
+	}
+	
+	public SYS_User getPolice(SYS_User user) throws Exception{
+			SYS_User ruser = this.userService.queryUserByUser(user.getUserName());
+			return ruser;
+	}
+	/**
+	 * 根据token查询用户信息
+	 * 
+	 * @param token
+	 * @return
+	 */
+	@RequestMapping(value = "p=queryByToken", method = RequestMethod.GET)
+	public ResponseEntity<User> queryUserByToken(
+			@PathVariable("token") String token) {
+		try {
+			User user = this.userService.queryUserByToken(token);
+			if (user == null) {
+				return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+			}
+			return ResponseEntity.ok(user);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(
+				null);
+	}
+	
+	public Map<String, Object> checkEntityByApp(Member entity) {
+		if (CheckUtil.isNullStr(entity.getRealName())||
+				CheckUtil.isNullStr(entity.getSex())||
+				CheckUtil.isNullStr(entity.getIdCard())||
+//				CheckUtil.isNullStr(entity.getProvinceID())||
+//				CheckUtil.isNullStr(entity.getCityID())||
+//				CheckUtil.isNullStr(entity.getAreaID())||
+				CheckUtil.isNullStr(entity.getAddress())||
+				CheckUtil.isNullStr(entity.getTokenID())
+				) {
+			return MessageUtil.error("MSG26", 426);
+		}
+		String reg15 = "^[1-9]\\d{7}((0\\d)|(1[0-2]))(([0|1|2]\\d)|3[0-1])\\d{3}$";
+		String reg18 = "^[1-9]\\d{5}[1-9]\\d{3}((0\\d)|(1[0-2]))(([0|1|2]\\d)|3[0-1])\\d{3}([0-9]|X)$";
+		if (!entity.getIdCard().matches(reg15) && !entity.getIdCard().matches(reg18)) 
+		{
+			return MessageUtil.error("MSG27", 427);
+		}
+		return null;
+	}
+	public int AudioLength (String  filename) throws LineUnavailableException, UnsupportedAudioFileException, IOException, BitstreamException {
+		File file = new File(filename);
+		FileInputStream fis=new FileInputStream(file);
+		int b=fis.available();
+		Bitstream bt=new Bitstream(fis);
+		Header h = bt.readFrame();
+		int time = (int) h.total_ms(b);
+		int i = time/1000;
+		return i;
+	}
+}
+

@@ -1,0 +1,47 @@
+package com.derbysoft.entity;
+
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component;
+
+@Component("system")
+public class SystemInfo {
+
+	@Value("${FILE.STATIC}")
+	public String staticFile;
+	
+	@Value("${FILE.ABSOLUTE}")
+	public String absoluteFile;
+	@Value("${FILE.uploadPath}")
+	private String uoloadPath;
+	@Value("${FILEVOICE.UPLOADPATH}")
+	public String VOICEUPLOADPATH;
+	@Value("${FILEIMG.UPLOADPATH}")
+	public String IMGLOADPATH;
+	@Value("${FILE.STATIC}")
+	public String absoluteFile1;
+	@Value("${FILE.UPLOAD}")
+	public String upload;
+	@Value("${SYS.DISTANCE}")
+	public String DISTANCE;
+	
+	@Value("${FILE.DIDIMOULD}")
+	public String DIDIMOULD;//模板地址格式F:/tomcat/apache-tomcat-7.0.57/me-webapps/DiDiAlarm/
+
+	
+	@Value("${DIDIURL}")
+	public String DIDIURL;//格式http://localhost:8080/DiDiAlarm/html/;
+	
+	@Value("${DIDOUT}")
+	public Integer DIDOUT;//
+	
+	public String getUoloadPath() {
+		return uoloadPath;
+	}
+
+	public void setUoloadPath(String uoloadPath) {
+		this.uoloadPath = uoloadPath;
+	}
+	
+	
+}
+

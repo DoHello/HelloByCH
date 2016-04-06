@@ -1,0 +1,132 @@
+package com.derbysoft.controller.appgms;
+
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+
+import net.sf.json.JSONObject;
+
+import org.quartz.Job;
+import org.quartz.JobExecutionContext;
+import org.quartz.JobExecutionException;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.derbysoft.controller.service.BaseDaoController;
+import com.derbysoft.entity.AlarmCallTime;
+import com.derbysoft.entity.cms.GmsAlarmCall;
+import com.derbysoft.entity.cms.Member;
+import com.derbysoft.entity.sys.SYS_User;
+import com.derbysoft.jms.activemq.JpushSender;
+import com.derbysoft.redis.service.UserService;
+
+import dy.hrtworkframe.controller.base.BaseController;
+import dy.hrtworkframe.dao.BaseDaoImpl;
+
+@Service
+public class RedisCallQuartz extends BaseDaoController implements Job {
+
+	@Autowired
+	private UserService userService;
+	@Autowired
+	private BaseDaoImpl baseDaoImpl;
+
+	@Autowired
+	private JpushSender jpushSender;
+
+	@Override
+	public void execute(JobExecutionContext arg0) throws JobExecutionException {
+		// TODO Auto-generated method stub
+		try {
+			userService.delAddressUser();
+			Map<String,AlarmCallTime> redisTodayCallTime = (Map<String, AlarmCallTime>) userService.getRedisTodayCallTime();
+			if (redisTodayCallTime != null) {
+				Iterator its = redisTodayCallTime.values().iterator();
+				while (its.hasNext()) {
+					JSONObject fromObject = JSONObject.fromObject(its.next());
+					AlarmCallTime val = (AlarmCallTime) JSONObject.toBean(fromObject, AlarmCallTime.class);
+//					AlarmCallTime val = (AlarmCallTime) its.next();
+					long result = System.currentTimeMillis() - val.getL();
+					String jpushNumToP = userService.getJpushNumToP(val.getId());
+					if (result > Long.parseLong(userService.getJpushTime())*1000*Integer.parseInt(userService.getJpushNum())||Integer.parseInt(jpushNumToP)>=Integer.parseInt(userService.getJpushNum())) {
+						userService.delRedisAlarmCallTime(val.getId());
+						Map<String, Object> m1 = new HashMap<String, Object>();
+//						m1.put("msg", "当前没有空闲警员，我们将通过指挥中心调派。给您带来的不便请谅解");
+//						m1.put("msgCode", "601");
+//						m1.put("styleNum", "3");
+//						m1.put("timeAlias", val);
+						GmsAlarmCall alarmCall = new GmsAlarmCall();
+						alarmCall.setAlarmID(val.getId());
+						Member userVal = new Member();
+						userVal.setAlias(val.getAlias());
+						m1.put("peopleCall", alarmCall);
+						m1.put("userAlias", userVal);
+						m1.put("msg", "当前没有空闲警员，我们将通过指挥中心调派。给您带来的不便请谅解");
+						m1.put("msgCode", "601");
+						m1.put("styleNum", "3");
+						jpushSender.send(m1, REFUSE);
+//						jpushSender.send(m1, "OUTNUMBER");
+					}else{
+						List<GmsAlarmCall> query = baseDaoImpl.query(GmsAlarmCall.class,"select * from gms_alarm_call where alarmid = '"+val.getId()+"'");
+						List<SYS_User> list = getPolice(query.get(0));
+						List<Member> queryM = baseDaoImpl.query(Member.class,"select * from cms_user where username = '"+query.get(0).getPhone()+"'");
+						Map<String, Object> m = new HashMap<String, Object>();
+						int i = Integer.parseInt(jpushNumToP);
+						if(i+1<list.size()){
+							m.put("who", "police");
+							m.put("peopleCall", query.get(0));
+							m.put("poliseFirst", list.get(i+1));
+							m.put("userAlias", queryM.get(0));
+							m.put("styleNum", "5");
+							jpushSender.send(m, "POLICE");
+						}else{
+//							GmsAlarmCall alarmCall = new GmsAlarmCall();
+//							userService.delRedisAlarmCallTime(val.getId());
+////							userService.delRedisAlarmCall(alarmCall, null);
+//							Map<String, Object> m1 = new HashMap<String, Object>();
+//							m1.put("msg", "当前没有空闲警员，我们将通过指挥中心调派。给您带来的不便请谅解");
+//							m1.put("msgCode", "601");
+//							m1.put("styleNum", "3");
+//							m1.put("timeAlias", val);
+//							jpushSender.send(m1, "OUTNUMBER");
+							GmsAlarmCall alarmCall = new GmsAlarmCall();
+							Map<String, Object> m1 = new HashMap<String, Object>();
+							alarmCall.setAlarmID(val.getId());
+							Member userVal = new Member();
+							userVal.setAlias(val.getAlias());
+							m1.put("peopleCall", alarmCall);
+							m1.put("userAlias", userVal);
+							m1.put("msg", "当前没有空闲警员，我们将通过指挥中心调派。给您带来的不便请谅解");
+							m1.put("msgCode", "601");
+							m1.put("styleNum", "3");
+							jpushSender.send(m1, REFUSE);
+						}
+					}
+				}
+			}
+//			System.out.println("执行了");
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+public static void main(String[] args) {
+	AlarmCallTime vala =new AlarmCallTime();
+	vala.setId("11223344");
+	vala.setL(123456);
+	Map redisTodayCallTime = new HashMap();
+	redisTodayCallTime.put("11223344", vala);
+	Iterator its = redisTodayCallTime.values().iterator();
+	while (its.hasNext()) {
+		System.out.println(its.next());
+//		AlarmCallTime val = (AlarmCallTime) its.next();
+//		long result = System.currentTimeMillis() - val.getL();
+//		if (result > 300000) {
+//			Map<String, Object> m1 = new HashMap<String, Object>();
+//			m1.put("isReceive", "no");
+//			m1.put("warning ", "当前没有空闲警员，我们将通过指挥中心调派。给您带来的不便请谅解");
+//		}
+	}
+}
+}

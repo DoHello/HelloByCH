@@ -1,0 +1,38 @@
+package com.derbysoft.servlet;
+
+import java.net.InetAddress;
+import java.net.UnknownHostException;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+
+import javax.servlet.ServletContextEvent;
+
+import org.junit.Test;
+import org.springframework.context.ApplicationContext;
+import org.springframework.web.context.ContextLoaderListener;
+import org.springframework.web.context.support.WebApplicationContextUtils;
+
+public class MuLoaderListener extends ContextLoaderListener{
+	
+/*	
+	private static ApplicationContext applicationContext;
+	private static String sql = null;  
+	private static DBHelper db1 = null;  
+	private static ResultSet ret = null;  */
+	
+
+	
+
+	
+/*	public void contextInitialized(ServletContextEvent event) {
+	
+	super.contextInitialized(event);
+	applicationContext = WebApplicationContextUtils.getRequiredWebApplicationContext(event.getServletContext());
+		}
+		
+	public static Object getBean(String beanName) {
+	return applicationContext.getBean(beanName);
+	}
+	*/
+
+}

@@ -1,0 +1,16 @@
+package com.derbysoft.entity.sys;
+
+import com.derbysoft.entity.cms.Label;
+
+public class ItemStyle {
+ private Normal  normal;
+
+public Normal getNormal() {
+	return normal;
+}
+
+public void setNormal(Normal normal) {
+	this.normal = normal;
+}
+ 
+}

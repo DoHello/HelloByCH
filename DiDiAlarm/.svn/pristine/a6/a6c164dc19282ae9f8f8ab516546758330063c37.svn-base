@@ -1,0 +1,33 @@
+# SQL 数据源配置
+JDBC.URL=jdbc\:mysql\://10.40.200.56\:3306/db_didi?useUnicode\=true&characterEncoding\=utf8&allowMultiQueries\=true
+JDBC.DriverClassName=com.mysql.jdbc.Driver
+JDBC.UserName=root
+JDBC.Password=123456
+# JDBC.Password=root
+#文件上传下载
+FILE.uploadPath=userfile/
+# FILE.STATIC=http\://116.228.89.136\:40016/DiDiFile/
+FILE.STATIC=http\://116.228.89.136\:40016/DiDiFile/
+FILE.ABSOLUTE=D\:\\web\\tomcat-file\\apache-tomcat-7.0.57\\webapps\\DiDiFile\\
+FILEVOICE.UPLOADPATH=userfile/voice/
+FILEIMG.UPLOADPATH=userfile/img/
+
+Mail.toMail = metasearchmanager@derbysoft.com
+
+Mail.Form = metasearchsendmail@derbysoft.com
+
+Mail.password = metasearch(123
+
+Mail.stmpHost =mail.derbysoft.com
+FILE.UPLOAD=http\://116.228.89.136\:40016/DiDiFile/
+DIDIURL=http\://116.228.89.136\:40011/DiDiAlarm/html/
+
+FILE.DIDIMOULD=http\://116.228.89.136\:40016/DiDiFile/
+FILE.DEFAULT=D\:/tomcat-file/apache-tomcat-7.0.57/webapps/DiDiAalarm/
+
+#距离
+SYS.DISTANCE=20
+
+DIDOUT=300
+
+

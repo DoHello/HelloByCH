@@ -1,0 +1,126 @@
+begin
+
+declare rt varchar(100) character set gbk default null;
+
+declare done tinyint(1) default 0;
+
+declare ttname varchar(60) character set gbk default null;
+
+declare tsqltxt varchar(512) character set gbk default null;
+
+declare tremarks varchar(60) character set gbk default null;
+
+declare tfield varchar(60) character set gbk default null;
+
+ 
+
+declare curtable cursor for
+
+select distinct table_name
+
+from information_schema.tables where trim(table_comment)<>'' and trim(table_comment)<>'view'  order by table_name;
+
+ 
+
+declare continue handler for not found set done=1;
+
+ set names 'utf8';
+
+drop table if exists gettablesql;
+
+create table `gettablesql` (
+
+  `tbname` varchar(60) character set gbk default null,
+
+  `sqltxt` varchar(4096) character set gbk default null,
+
+  `tabletitle` varchar(51) character set gbk default null
+
+) engine=innodb;
+
+open curtable;
+
+   tableloop:
+
+  loop
+
+      set tsqltxt='select';
+
+      fetch curtable
+
+      into ttname;
+
+      if done = 1 then
+
+         leave tableloop;
+
+      end if;
+
+      -- select ttname;
+
+ begin
+
+       declare done1 tinyint(1) default 0;
+
+       declare curfield cursor for
+
+      
+select  column_name,column_comment
+
+            from information_schema.columns  where upper(table_name)=upper(ttname) and (column_comment<>'') ;
+
+       declare continue handler for not found set done1=1;
+
+      open curfield;
+
+         fieldloop:
+
+       loop
+
+        fetch curfield
+
+        into tfield,tremarks;
+
+        if done1 = 1 then
+
+         leave fieldloop;
+
+        end if;
+
+        if tsqltxt='select' then
+
+           set tsqltxt=concat(tsqltxt,' ',tfield,' ','''',tremarks,'''');
+
+        else
+
+           set tsqltxt=concat(tsqltxt,',',tfield,' ','''',tremarks,'''');
+
+        end if;
+
+      
+
+       end loop fieldloop;
+
+       close curfield;
+
+       set tsqltxt=concat(tsqltxt,' from ',ttname);
+
+       insert into gettablesql values(ttname,tsqltxt,'');
+
+end;
+
+   end loop tableloop;
+
+   close curtable;
+
+  update gettablesql as g set tabletitle=(select table_comment from information_schema.tables  s
+
+   where (trim(s.table_comment)<>'') and g.tbname=s.table_name );
+
+  select cast(count(*) as char) into rt from gettablesql;
+
+  set rt=concat('成功更新',rt,'个表的表名注释和字段注释到字典库gettablesql中！');
+
+  select rt;
+
+end

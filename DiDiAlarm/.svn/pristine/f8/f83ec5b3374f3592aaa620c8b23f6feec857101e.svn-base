@@ -1,0 +1,35 @@
+package com.derbysoft.entity;
+
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component;
+
+@Component("system")
+public class SystemInfo {
+
+	@Value("${FILE.STATIC}")
+	public String staticFile;
+	
+	@Value("${FILE.ABSOLUTE}")
+	public String absoluteFile;
+	@Value("${FILE.uploadPath}")
+	private String uoloadPath;
+	@Value("${FILEVOICE.UPLOADPATH}")
+	public String VOICEUPLOADPATH;
+	@Value("${FILEIMG.UPLOADPATH}")
+	public String IMGLOADPATH;
+	@Value("${FILE.STATIC}")
+	public String absoluteFile1;
+	@Value("${FILE.UPLOAD}")
+	public String upload;
+
+	public String getUoloadPath() {
+		return uoloadPath;
+	}
+
+	public void setUoloadPath(String uoloadPath) {
+		this.uoloadPath = uoloadPath;
+	}
+	
+	
+}
+

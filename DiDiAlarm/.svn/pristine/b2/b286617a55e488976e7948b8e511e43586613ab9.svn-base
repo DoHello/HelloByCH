@@ -1,0 +1,99 @@
+package com.derbysoft.controller.sys;
+
+import java.util.ArrayList;
+
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+
+import javax.servlet.http.HttpSession;
+
+
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+import com.derbysoft.controller.service.BaseDaoController;
+import com.derbysoft.entity.cms.Member;
+import com.derbysoft.entity.sys.SYS_User;
+import com.derbysoft.redis.service.UserService;
+
+import dy.hrtworkframe.util.MessageUtil;
+
+@Transactional
+@Controller("mapLive")
+@RequestMapping("mapLive.do")
+public class MapLiveController extends BaseDaoController{
+
+	@Autowired
+	private UserService userService;
+	
+	@RequestMapping(params = "p=getAllInfo")
+	@SuppressWarnings("all")
+	public @ResponseBody Map<String , Object> getAllInfo(HttpSession session){
+//		Map result = new HashMap();
+		try{
+			//获取所有警员数量(看数据量,需不需要做优化)
+			List<SYS_User> allUsers = baseDaoImpl.query(SYS_User.class);
+			//获取在岗警员数量
+			List<SYS_User> workUsers = new ArrayList<SYS_User>();
+			Map policeAddress = userService.getPoliceAddress();
+			if(policeAddress!=null){
+				
+				Iterator its = policeAddress.values().iterator();
+				while (its.hasNext()) {
+					SYS_User val = (SYS_User)its.next();
+					workUsers.add(val);
+				}
+			}
+			//获取在线用户数量
+			List<Member> membersOL = new ArrayList<Member>();
+			Map usersAddress = userService.getUsersAddress();
+			if(usersAddress!=null){
+				Iterator it = usersAddress.values().iterator();
+				while (it.hasNext()) {
+					Member val = (Member)it.next();
+					membersOL.add(val);
+				}
+			}
+			//获取所有报警信息
+			Map alarmCall = userService.queryTodayCall();
+//			alarmCall.put("allUsers", allUsers.size());
+			if(allUsers==null){
+				alarmCall.put("allUsers", 0);
+			}else{
+				alarmCall.put("allUsers", allUsers.size());
+			}
+			if(workUsers==null){
+				alarmCall.put("workUsers", 0);
+				alarmCall.put("workMove", null);
+			}else{
+				alarmCall.put("workUsers", workUsers.size());
+				alarmCall.put("workMove", workUsers);
+			}
+			if(membersOL==null){
+				alarmCall.put("membersOL", 0);
+			}else{
+				alarmCall.put("membersOL", membersOL.size());
+			}
+//			result.put("alarmCall", alarmCall);
+			if((Map)alarmCall.get("nodealingNum")==null){
+				alarmCall.put("nodealingNum",0);
+			}else{
+				alarmCall.put("nodealingNum", ((Map)alarmCall.get("nodealingNum")).size());
+			}
+			alarmCall.remove("needDeal");
+			return MessageUtil.success(alarmCall,"MSG1",200);
+		}catch(Exception e){
+			e.printStackTrace();
+			MessageUtil.error("MSG6",500);
+		}
+		return MessageUtil.error("MSG6",500);
+	}
+	public static void main(String[] args) {
+		System.out.println();
+	}
+}

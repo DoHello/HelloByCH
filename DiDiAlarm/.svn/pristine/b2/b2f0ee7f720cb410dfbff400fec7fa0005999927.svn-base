@@ -1,0 +1,23 @@
+package com.derbysoft.dao.sys;
+
+import java.util.Map;
+
+import org.springframework.stereotype.Repository;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import com.derbysoft.entity.cms.Article;
+
+import dy.hrtworkframe.dao.BaseDaoImpl;
+import dy.hrtworkframe.entity.Pager;
+
+/**
+ * 获取关于警员的版本数据操作
+ 
+*
+ */
+@Service
+public class PoliceEditionDao extends BaseDaoImpl {
+	
+	
+}

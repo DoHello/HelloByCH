@@ -1,0 +1,417 @@
+package com.derbysoft.controller.sys;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import javax.annotation.Resource;
+import javax.servlet.http.HttpSession;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+import net.sf.json.JSONArray;
+
+import org.joda.time.Seconds;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.servlet.ModelAndView;
+
+import com.derbysoft.dao.cms.NewsDao;
+import com.derbysoft.dao.sys.DicDao;
+import com.derbysoft.dao.sys.UserDao;
+import com.derbysoft.entity.echarts.Sector;
+import com.derbysoft.entity.echarts.Sector_four;
+import com.derbysoft.entity.sys.Company;
+import com.derbysoft.entity.sys.SYS_Analysis;
+import com.derbysoft.entity.sys.SYS_User;
+import com.derbysoft.service.cms.DateService;
+import com.mysql.fabric.xmlrpc.base.Array;
+
+import dy.hrtworkframe.controller.base.BaseController;
+import dy.hrtworkframe.entity.report.BarRopert;
+import dy.hrtworkframe.util.Const;
+import dy.hrtworkframe.util.DateUtil;
+import dy.hrtworkframe.util.MessageUtil;
+import dy.hrtworkframe.util.PageData;
+
+
+@Transactional
+@Controller
+@RequestMapping("date.do")
+public class DateController extends BaseController {
+	@Resource(name="userDao")
+	private UserDao userDao;
+	
+	@Autowired
+	private DateService dateService;
+	
+	@Resource(name="systemDicDao")
+    private DicDao systemDicDao;
+	
+	
+	//案件统计页面
+	@RequestMapping(params="p=caseStatistics")
+	public ModelAndView showListView(HttpSession session ,@ModelAttribute SYS_Analysis  entity) throws Exception {
+		SYS_User user = (SYS_User) session.getAttribute(Const.SESSION_USER);
+		pd = getPageData();
+		try {
+			
+			//String 					
+		pd.put("type", systemDicDao.findByCategory("CaseType"));//后面是一个list集合
+			mv.addObject("model", pd);
+			//String w="select * from  sys_company where  1=1 GROUP by CompanyID";
+		//	List<Company> query = userDao.query(Company.class, w);
+			mv.setViewName("/system/analysis/case-statistics");
+			return MessageUtil.success(mv);
+		} catch (Exception e) {
+			return MessageUtil.exception(user, mv, e);
+		}	
+		
+
+	}
+	
+	
+
+	
+	@RequestMapping(params="p=caseStatistics123")
+	public @ResponseBody  Map<String, Object> caseStatistics123(HttpSession session ,@ModelAttribute SYS_Analysis  entity) throws Exception {
+		pd = getPageData();
+
+		 Map<String, Object> hashMap = new HashMap<String , Object>();
+
+		try {
+			if("".equals(entity.getDatepickerend()) ){
+				entity.setDatepickerend(DateUtil.getDateTimeString());
+			}
+			if("".equals(entity.getDatepickerstart()) ){
+				entity.setDatepickerstart("2015-1-1");
+
+			}
+			if(null==entity.getType()){
+				entity.setType("0");
+
+			}
+			//String 					
+/*			pd.put("type", systemDicDao.findByCategory("CaseType"));//后面是一个list集合
+			*/
+			ArrayList<String> arrayList = new ArrayList<String>();
+			arrayList.add(entity.getDatepickerstart());
+			arrayList.add(entity.getDatepickerend());
+			arrayList.add(entity.getType());
+			
+			  List<Sector> call = userDao.call(new Sector() , arrayList,"caseRange");
+             //new HashMap<String , V>();
+			  //这是扇形的数据
+	         hashMap.put("allNum", call.get(call.size()-1).getValue());
+			 //jsonArray = JSONArray.fromObject(call);
+			 call.remove(call.size()-1);
+             hashMap.put("casen", call);
+             ArrayList<String> findPolice = dateService.findPolice();
+			hashMap.put("police",findPolice);
+			
+			ArrayList<SYS_Bar> findCaseNum = dateService.findCaseNum(call);
+			
+            hashMap.put("caseNum",findCaseNum); 
+			//pd.put("call", call);
+		    //mv.addObject("model",pd);
+			//pd.put("pol")
+		} catch (Exception e) {
+			//return MessageUtil.(user, mv, e);
+		}
+		
+ return hashMap;
+	}
+
+	
+	
+	
+	//区域统计页面
+	@RequestMapping(params="p=areaStatistics")
+	public ModelAndView areaStatistics(HttpSession session ,@ModelAttribute SYS_Analysis  entity) throws Exception {
+		SYS_User user = (SYS_User) session.getAttribute(Const.SESSION_USER);
+		pd = getPageData();
+		try {				
+		//pd.put("type", systemDicDao.findByCategory("CaseType"));//后面是一个list集合
+			
+			
+			//String w="select * from  sys_company where  1=1 GROUP by CompanyID";
+		//	List<Company> query = userDao.query(Company.class, w);
+			String w="select * from  sys_company where  1=1 GROUP by CompanyID";
+			List<Company> query = userDao.query(Company.class, w);
+			pd.put("type", query);
+			mv.addObject("model", pd);
+			mv.setViewName("/system/analysis/area-statistics");
+			return MessageUtil.success(mv);
+		} catch (Exception e) {
+			return MessageUtil.exception(user, mv, e);
+		}	
+		
+
+	}
+	
+	//区域查询
+/*	@RequestMapping(params="p=areaStatisticsView")
+	public @ResponseBody Map<String, Object> areaStatisticsView(HttpSession session ,@ModelAttribute SYS_Analysis  entity) throws Exception {
+		SYS_User user = (SYS_User) session.getAttribute(Const.SESSION_USER);
+		pd = getPageData();
+
+		 Map<String, Object> hashMap = new HashMap<String , Object>();
+
+		try {
+			if("".equals(entity.getDatepickerend()) ){
+				entity.setDatepickerend(DateUtil.getDateTimeString());
+			}
+			if("".equals(entity.getDatepickerstart()) ){
+				entity.setDatepickerstart("2015-1-1");
+
+			}
+			if(null==entity.getType()){
+				entity.setType("0");
+
+			}
+			//String 					
+			pd.put("type", systemDicDao.findByCategory("CaseType"));//后面是一个list集合
+			mv.addObject("model", pd);
+			ArrayList<String> arrayList = new ArrayList<String>();
+			arrayList.add(entity.getDatepickerstart());
+			arrayList.add(entity.getDatepickerend());
+			arrayList.add(entity.getType());
+			
+			  List<Sector> call = userDao.call(new Sector() , arrayList,"areaRange");
+            //new HashMap<String , V>();
+			  //这是扇形的数据
+	         hashMap.put("caseNum", call.get(call.size()-1).getValue());
+	         hashMap.put("all",call.get(call.size()-1));
+			 //jsonArray = JSONArray.fromObject(call);
+			 call.remove(call.size()-1);
+            hashMap.put("casen", call);
+            ArrayList<String> caseType = dateService.findCase();
+			hashMap.put("caseType",caseType);
+			
+			ArrayList<SYS_Bar> findCaseNum = dateService.findCaseNum(call);
+			
+           hashMap.put("caseNum",findCaseNum); 
+			//pd.put("call", call);
+		    //mv.addObject("model",pd);
+			//pd.put("pol")
+		} catch (Exception e) {
+			//return MessageUtil.(user, mv, e);
+		}
+		
+return hashMap;
+}*/
+	@RequestMapping(params="p=areaStatisticsView")
+	public @ResponseBody  Map<String, Object> areaStatisticsView(HttpSession session ,@ModelAttribute SYS_Analysis  entity) throws Exception {
+		pd = getPageData();
+
+		 Map<String, Object> hashMap = new HashMap<String , Object>();
+
+		try {
+			if(null==entity.getDatepickerend()||"".equals(entity.getDatepickerend()) ){
+				entity.setDatepickerend(DateUtil.getDateTimeString());
+			}
+			if(null==entity.getDatepickerstart()||"".equals(entity.getDatepickerstart()) ){
+				entity.setDatepickerstart("2015-1-1");
+
+			}
+			if(null==entity.getType()){
+				entity.setType("0");
+
+			}
+			pd.put("type", systemDicDao.findByCategory("CaseType"));//后面是一个list集合
+			
+			ArrayList<String> arrayList = new ArrayList<String>();
+			arrayList.add(entity.getDatepickerstart());
+			arrayList.add(entity.getDatepickerend());
+			arrayList.add(entity.getType());
+			
+			  List<Sector> call = userDao.call(new Sector() , arrayList,"areaCount");
+            //new HashMap<String , V>();
+			  //这是扇形的数据
+	         hashMap.put("caseNum", call.get(call.size()-1).getValue());
+	         hashMap.put("all",call.get(call.size()-1));
+			 //jsonArray = JSONArray.fromObject(call);
+			 call.remove(call.size()-1);
+            hashMap.put("casen", call);
+            ArrayList<String> caseType = dateService.findCase();
+			hashMap.put("caseType",caseType);
+			
+			ArrayList<SYS_Bar> findCaseNum = dateService.findCaseNum(call);
+			
+           hashMap.put("caseNum",findCaseNum); 
+			//pd.put("call", call);
+		    //mv.addObject("model",pd);
+			//pd.put("pol")
+		} catch (Exception e) {
+			//return MessageUtil.(user, mv, e);
+		}
+		
+return hashMap;
+	}
+	
+	
+	//alarmalarmstatistics
+	@RequestMapping(params="p=alarmAlarmstAtistics")
+	public ModelAndView alarmAlarmstAtistics(HttpSession session ) throws Exception {
+		SYS_User user = (SYS_User) session.getAttribute(Const.SESSION_USER);
+		pd = getPageData();
+		try {
+			String w="select * from  sys_company where  1=1 GROUP by CompanyID";
+			List<Company> query = userDao.query(Company.class, w);
+			pd.put("type", query);
+			mv.addObject("model", pd);
+			mv.setViewName("/system/analysis/alarm-alarm-statistics");
+			return MessageUtil.success(mv);
+		} catch (Exception e) {
+			return MessageUtil.exception(user, mv, e);
+		}	
+}	//报警时间统计
+	@RequestMapping(params="p=alarmtTimeStatisticsView")
+	public @ResponseBody  Map<String, Object> alarmtTmeStatisticsView(HttpSession session ,@ModelAttribute SYS_Analysis  entity) throws Exception {
+		pd = getPageData();
+
+		 Map<String, Object> hashMap = new HashMap<String , Object>();
+
+		try {
+			if(null==entity.getDatepickerend()||"".equals(entity.getDatepickerend()) ){
+				entity.setDatepickerend(DateUtil.getDateTimeString());
+			}
+			
+			if(null==entity.getDatepickerstart()||"".equals(entity.getDatepickerstart()) ){
+				entity.setDatepickerstart("2015-1-1");
+
+			}
+			if(null==entity.getType()||"".equals(entity.getType())){
+				entity.setType("0");
+
+			}
+
+			ArrayList<String> arrayList = new ArrayList<String>();
+			arrayList.add(entity.getDatepickerstart());
+			arrayList.add(entity.getDatepickerend());
+			arrayList.add(entity.getType());
+			
+			List<Sector_four> call = userDao.call(new Sector_four() , arrayList,"timeCount");
+			  //这是扇形的数据
+			ArrayList<Object> arrayList2 = new ArrayList<>();
+		    for(int i=0;i<call.size();i++){
+		    	arrayList2.add(call.get(i).getValue());
+		    }
+		    hashMap.put("model", arrayList2);
+		} catch (Exception e) {
+			//return MessageUtil.(user, mv, e);
+		}
+		
+return hashMap;
+	}
+	@RequestMapping(params="p=alarmtTimeStatistics")
+	public ModelAndView alarmtTmeStatistics(HttpSession session ,@ModelAttribute SYS_Analysis  entity) throws Exception {
+
+		SYS_User user = (SYS_User) session.getAttribute(Const.SESSION_USER);
+		pd = getPageData();
+		try {
+			String w="select * from  sys_company where  1=1 GROUP by CompanyID";
+			List<Company> query = userDao.query(Company.class, w);
+			pd.put("type", query);					
+		    pd.put("caseType", systemDicDao.findByCategory("CaseType"));//后面是一个list集合
+			mv.addObject("model", pd);
+			//String w="select * from  sys_company where  1=1 GROUP by CompanyID";
+		//	List<Company> query = userDao.query(Company.class, w);
+			mv.setViewName("/system/analysis/alarm-time-statistics");
+			return MessageUtil.success(mv);
+		} catch (Exception e) {
+			return MessageUtil.exception(user, mv, e);
+		}	
+	}
+	
+	@RequestMapping(params="p=alarmsSexStatistics")
+	public ModelAndView alarmsSexStatistics(HttpSession session ,@ModelAttribute SYS_Analysis  entity) throws Exception {
+
+		SYS_User user = (SYS_User) session.getAttribute(Const.SESSION_USER);
+		pd = getPageData();
+		try {
+			
+			String w="select * from  sys_company where  1=1 GROUP by CompanyID";
+			List<Company> query = userDao.query(Company.class, w);
+			pd.put("type", query);					
+		    pd.put("caseType", systemDicDao.findByCategory("CaseType"));//后面是一个list集合
+			mv.addObject("model", pd);
+			//String 					
+		//pd.put("case", systemDicDao.findByCategory("CaseType"));//后面是一个list集合
+	    
+		//mv.addObject("model", pd);
+			//String w="select * from  sys_company where  1=1 GROUP by CompanyID";
+		//	List<Company> query = userDao.query(Company.class, w);
+			mv.setViewName("/system/analysis/alarm-sex-statistics");
+			return MessageUtil.success(mv);
+		} catch (Exception e) {
+			return MessageUtil.exception(user, mv, e);
+		}	
+	}
+	
+	@RequestMapping(params="p=alarmsSexStatisticsView")
+	public @ResponseBody Map<String, Object> alarmsSexStatisticsView(HttpSession session ,@ModelAttribute SYS_Analysis  entity) throws Exception {
+		pd = getPageData();
+
+		 Map<String, Object> hashMap = new HashMap<String , Object>();
+
+		try {
+			if(null==entity.getDatepickerend()||"".equals(entity.getDatepickerend()) ){
+				entity.setDatepickerend(DateUtil.getDateTimeString());
+			}
+			if(null==entity.getDatepickerstart()||"".equals(entity.getDatepickerstart()) ){
+				entity.setDatepickerstart("2015-1-1");
+
+			}
+			if(null==entity.getType()){
+				entity.setType("0");
+
+			}
+			pd.put("type", systemDicDao.findByCategory("CaseType"));//后面是一个list集合
+			
+			ArrayList<String> arrayList = new ArrayList<String>();
+			arrayList.add(entity.getDatepickerstart());
+			arrayList.add(entity.getDatepickerend());
+			arrayList.add(entity.getType());
+			HashMap<String, Object> hashMap2 = new HashMap<String , Object>();
+			  List<Sector> call = userDao.call(new Sector() , arrayList,"areaCount");
+              //new HashMap<String , V>();
+			  //这是扇形的数据
+		    hashMap2.put("caseType", systemDicDao.findByCategory("CaseType"));
+		    
+		} catch (Exception e) {
+			//return MessageUtil.(user, mv, e);
+		}
+		
+return hashMap;
+	}
+	
+}

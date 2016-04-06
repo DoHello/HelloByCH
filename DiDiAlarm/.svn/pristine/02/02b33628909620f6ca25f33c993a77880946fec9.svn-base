@@ -1,0 +1,67 @@
+package com.derbysoft.servlet;
+
+import java.net.InetAddress;
+import java.net.UnknownHostException;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+
+import javax.servlet.ServletContextEvent;
+
+import org.junit.Test;
+import org.springframework.context.ApplicationContext;
+import org.springframework.web.context.ContextLoaderListener;
+import org.springframework.web.context.support.WebApplicationContextUtils;
+
+public class MuLoaderListener extends ContextLoaderListener{
+	
+	
+	private static ApplicationContext applicationContext;
+	private static String sql = null;  
+	private static DBHelper db1 = null;  
+	private static ResultSet ret = null;  
+	
+
+	
+	@Test
+    public static boolean selectIP() {  
+        sql = "select *from didi_ip";//SQL语句  
+        db1 = new DBHelper(sql);//创建DBHelper对象  
+  
+        try {  
+            ret = (ResultSet) db1.pst.executeQuery();//执行语句，得到结果集  
+            while (ret.next()) {  
+                String uid = ret.getString(1);  
+                String ufname = ret.getString(2);   
+				try {
+					 String ip = InetAddress.getLocalHost().getHostAddress();
+					 if(ip.equals(ufname.trim())){
+						 return true;
+								 
+					 }
+				} catch (UnknownHostException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				
+            }
+            ret.close();  
+            db1.close();//关闭连接  sss
+            return false;
+        } catch (SQLException e) {  
+            e.printStackTrace();  
+        } 
+		return false;
+    }   
+	
+	public void contextInitialized(ServletContextEvent event) {
+		if(selectIP()){
+	super.contextInitialized(event);
+	applicationContext = WebApplicationContextUtils.getRequiredWebApplicationContext(event.getServletContext());
+		}
+		}
+	public static Object getBean(String beanName) {
+	return applicationContext.getBean(beanName);
+	}
+	
+
+}

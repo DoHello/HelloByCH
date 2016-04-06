@@ -1,0 +1,235 @@
+﻿@charset "utf-8";
+*{ margin: 0; padding: 0;}
+ul{ list-style: none;}
+a{ text-decoration: none;}
+body{ font-family: 'Microsoft Yahei', Arial, Helvetica, "黑体", sans-serif; font-size: 18px;}
+.Wrapper{ width: 1824px; height: 964px; background: url("../images/bg.png") no-repeat; position: relative; padding: 60px 40px 56px 56px;}
+.menu{ width: 340px; height: 100%; float: left;}
+.menu-icon{ text-align: center; color: #fff; padding: 28px 0 40px; background: url("../images/menu-guang.png") center bottom no-repeat;}
+.menu-icon span{ display: block; line-height: 62px;}
+ul.menu-list{ width: 100%; margin-top: 48px;}
+ul.menu-list li{ width: 100%; margin-bottom: 20px;}
+ul.menu-list li a{ display: block; color: #19649a; width: 280px; height: 50px; background: url("../images/menu-a-bg.png") no-repeat; margin: 0 auto; text-align: center; line-height: 50px;}
+ul.menu-list li a.on{ background: url("../images/menu-a-on-bg.png") no-repeat; color: #fff;}
+
+/*
+区域统计 start
+*/
+.main{ margin-left: 340px; height: 100%;}
+.search{ height: 100px; overflow: hidden;}
+.search ul{ float: right; padding-right: 104px; margin-top: 30px; font-size: 14px;}
+.search ul li{  height: 40px; float: left; margin-left: 22px; text-align: center; overflow: hidden; line-height: 40px;  color: #19649a;}
+.search ul li:last-child{ background: url("../images/search-bg.png") left center no-repeat; color: #19649a; line-height: 40px; width: 140px;}
+.search ul li input{ width: 125px; height: 40px; background: url("../images/input-bg.png") no-repeat; border: none; color: #fff; padding-left: 25px; cursor: pointer;}
+/*日历控件 start*/
+.ui-datepicker {
+    width:246px;
+    height:244px;
+    display: none;
+}
+.ui-datepicker .ui-datepicker-header {
+    position: relative;
+    width:246px;
+    z-index:2000;
+    padding:0 0 5px;
+}
+.ui-datepicker .ui-datepicker-prev,
+.ui-datepicker .ui-datepicker-next {
+    position: absolute;
+    top: 20px;
+    width: 7px;
+    height: 14px;
+    cursor:pointer;
+}
+.ui-datepicker .ui-datepicker-prev{
+    left: 22px;
+    background:url(../images/dateprev.gif) no-repeat;
+}
+.ui-datepicker .ui-datepicker-next{
+    right: 22px;
+    background:url(../images/datenext.gif) no-repeat;
+}
+.ui-datepicker a.ui-datepicker-prev-hover {
+    border:none;
+    background:url(../images/dateprevcur.gif) no-repeat;
+}
+.ui-datepicker a.ui-datepicker-next-hover {
+    border:none;
+    background:url(../images/datenextcur.gif) no-repeat;
+}
+.ui-datepicker .ui-datepicker-prev span,
+.ui-datepicker .ui-datepicker-next span {
+    display: none;
+}
+
+.ui-widget-content {
+    width:246px;
+    height:244px;
+    padding:15px 10px;
+    border:none;
+    background:url(../images/datebg.png) no-repeat;
+    color: #959595;
+    font-family:'Microsoft Yahei';
+}
+.ui-widget-header {
+    border:none;
+    background: #fff;
+    color: #19649a;
+    font-weight: normal;
+}
+.ui-datepicker .ui-datepicker-title {
+    margin: 0 2.3em;
+    font-size:14px;
+    color:#19649a;
+    line-height: 30px;
+    text-align: center;
+    margin-top:12px;
+}
+.ui-datepicker table {
+    margin: 0;
+}
+.ui-datepicker th {
+    padding: .3em;
+    font-size:15px;
+    color:#a7bbd0;
+    text-align: center;
+    font-weight: normal;
+    border: 0;
+}
+.ui-datepicker td {
+    border: 0;
+    font-family:'Arial';
+    font-size:14px;
+}
+.ui-datepicker td span,
+.ui-datepicker td a {
+    display: block;
+    padding: 6px 5px;
+    text-align: center;
+    text-decoration: none;
+}
+/* Interaction states
+----------------------------------*/
+.ui-state-default,
+.ui-widget-content .ui-state-default,
+.ui-widget-header .ui-state-default {
+    border: none;
+    background: none;
+    font-weight: normal;
+    color: #19649a;
+}
+.ui-state-default a,
+.ui-state-default a:link,
+.ui-state-default a:visited {
+    color: #1c94c4;
+    text-decoration: none;
+}
+.ui-state-hover,
+.ui-widget-content .ui-state-hover,
+.ui-widget-header .ui-state-hover,
+.ui-state-focus,
+.ui-widget-content .ui-state-focus,
+.ui-widget-header .ui-state-focus {
+    border: none;
+    background: #19649a;
+    color: #fff;
+    border-radius: 50%;
+}
+.ui-state-hover a,
+.ui-state-hover a:hover,
+.ui-state-hover a:link,
+.ui-state-hover a:visited,
+.ui-state-focus a,
+.ui-state-focus a:hover,
+.ui-state-focus a:link,
+.ui-state-focus a:visited {
+    color: #c77405;
+    text-decoration: none;
+}
+.ui-state-active,
+.ui-widget-content .ui-state-active,
+.ui-widget-header .ui-state-active {
+    border: none;
+    border-radius: 50%;
+    background: #19649a;
+    font-weight: normal;
+    color: #fff;
+}
+.ui-state-active a,
+.ui-state-active a:link,
+.ui-state-active a:visited {
+    color: #eb8f00;
+    text-decoration: none;
+}
+/*日历控件 end*/
+
+.charts{ width: 100%; height: 864px; position: relative;}
+.charts .tit{ position: absolute; top: 630px;}
+.charts .tit h3{ width: 580px; display: inline-block; font-weight: normal; font-size: 20px; color: #19649a; text-align: center;}
+.charts .tit h3:last-child{ width: 898px;}
+.chart-01{ width: 580px; height: 456px; position: absolute; top: 200px; left: 0; border-right: 1px solid #d2d9de; z-index: 2;}
+.chart-02{ width: 1484px; height: 515px; position: absolute; top: 145px; left: 0; z-index: 1;}
+/*
+区域统计 end
+*/
+
+/*案件统计 start*/
+.c-s ul.menu-list{ margin-top: 0;}
+.chart-03{ width: 580px; height: 456px; position: absolute; top: 200px; left: 0; border-right: 1px solid #d2d9de; z-index: 2;}
+.chart-04{ width: 1484px; height: 515px; position: absolute; top: 145px; left: 0; z-index: 1;}
+/*案件统计 end*/
+
+/*警员统计 start*/
+.p-s ul.menu-list{ margin-top: 0;}
+
+.chart-05{ width: 984px; height: 515px; margin-top: 145px; z-index: 1; float: left}
+
+.speed-efficiency{ width: 496px; height: 100%; float: right; border-left: 1px solid #edf0f2;}
+.speed{ width: 100%; height: 340px; border-bottom: 1px solid #edf0f2; background: url("../images/speed.png") center 60px no-repeat;}
+.speed span{ display: block; text-align: center; font-size: 42px; color: #38bedf; padding-top: 140px;}
+.speed i{ display: block; text-align: center; font-size: 18px; color: #38bedf; font-style: normal;}
+#myStat2{ width: 100%!important; height: 330px; text-align: center!important;}
+#myStat2 span.circle-text{ display: block; line-height: 40px!important; font-size: 48px!important; color: #57a7e0!important; position: relative; top: 155px; }
+#myStat2 span.circle-info{ display: block;  font-size: 18px!important; color: #57a7e0!important;  line-height: 20px!important; position: relative; top: 165px;}
+/*警员统计 end*/
+
+/*报警/接警统计 start*/
+.chart-06{ width: 740px; height: 432px; float: left; border-right: 1px solid #edf0f2; border-bottom:  1px solid #edf0f2; position: relative;}
+.charts-tit{ position: absolute; left: 460px; top: 250px;}
+.charts-tit span{ display: block; color: #a2cf31; font-size: 14px; line-height: 40px;}
+.charts-tit span:last-child{ color: #3398e1;}
+.charts-tit em{ display: inline-block; width: 14px; height: 14px; background: #a2cf31; border-radius: 50%; margin-right: 8px;}
+.charts-tit i{ font-style: normal; margin-left: 40px; font-size: 30px;}
+
+.chart-07{ width: 740px; height: 432px; float: left; border-bottom:  1px solid #edf0f2;}
+.chart07-tit{ left: 1200px;}
+.chart07-tit span{ color: #ffce00;}
+.chart07-tit span:last-child{ color: #a2cf31;}
+
+.chart-08{ width: 740px; height: 431px; float: left; border-right: 1px solid #edf0f2;}
+.chart08-tit{ top: 682px;}
+.chart08-tit span{ color: #fe8b4a;}
+.chart08-tit span:last-child{ color: #ffce00;}
+
+.chart-09{ width: 740px; height: 430px; float: left;}
+.chart09-tit{  left: 1200px; top: 682px;}
+.chart09-tit span{ color: #f54441;}
+.chart09-tit span:last-child{ color: #fe8b4a;}
+/*报警/接警统计 end*/
+
+/*报警年龄统计 start*/
+.chart-10{ width: 1484px; height: 800px; margin-top: 64px;}
+/*报警年龄统计 end*/
+
+/*报警时间统计 start*/
+.chart-11{ width: 1484px; height: 800px; margin-top: 64px;}
+/*报警时间统计 end*/
+
+/*报警性别统计 start*/
+.chatrs-list{ width: 100%; height: 100%;}
+.chatrs-list li{ width: 20%; height: 50%; float: left; text-align: center;}
+.chart-12-21{ width: 297px; height: 400px;}
+.chatrs-list li span{ display: block; font-size: 24px; color: #19649a;}
+.chart16,.chart21{ width: 296px!important;}
+.chart-17,.chart-18,.chart-19,.chart-20,.chart-21{ height: 300px!important;}
+/*报警性别统计 end*/

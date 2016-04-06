@@ -1,0 +1,351 @@
+package com.derbysoft.entity.cms;
+
+import java.io.Serializable;
+import java.util.List;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
+import dy.hrtworkframe.annotation.Key;
+import dy.hrtworkframe.annotation.Table;
+import dy.hrtworkframe.annotation.Temporary;
+
+@Table(name = "GMS_Alarm_Call")
+public class GmsAlarmCall implements Serializable {
+
+	/**
+	 * @fieldName: serialVersionUID
+	 * @fieldType: long
+	 * @Description: TODO
+	 */
+	private static final long serialVersionUID = 5519113339591024441L;
+    @Key
+	private String alarmID;
+	@JsonIgnore
+	private String userID;
+	@Temporary
+	private String alarmReceiveID;
+
+	private String userName;
+    @Temporary
+	private String policeName;
+    @Temporary
+	private String  policeID;
+    
+
+	public String getPoliceID() {
+		return policeID;
+	}
+
+	public void setPoliceID(String policeID) {
+		this.policeID = policeID;
+	}
+
+	public String getPoliceName() {
+		return policeName;
+	}
+
+	public void setPoliceName(String policeName) {
+		this.policeName = policeName;
+	}
+
+	public String getAlarmReceiveID() {
+		return alarmReceiveID;
+	}
+
+	public void setAlarmReceiveID(String alarmReceiveID) {
+		this.alarmReceiveID = alarmReceiveID;
+	}
+
+	@JsonIgnore
+	private String alarmLevel;
+
+	private String messageType;
+
+	private String messageText;
+
+	private String message;
+	
+	private String inputDate;
+	@JsonIgnore
+	private String ischeack;
+	@JsonIgnore
+	private String age;
+	@JsonIgnore
+	private String sex;
+	@JsonIgnore
+	@Temporary
+	private String count;
+	
+	private String phone;
+	@Temporary
+	private List<GmsAlarmReceive> receiveList;
+	@Temporary
+	private String  receiveUpdate;
+
+	private String memberHeadImg;
+	@Temporary
+	private String callStatus;
+		
+	private String name;
+	@Temporary	
+	private String userPhone;
+	
+	private String audioLength;
+	
+	private String deleteStatus;
+	private String stopCause;
+	private String remarkStop;
+     
+	
+
+	public String getStopCause() {
+		return stopCause;
+	}
+
+	public void setStopCause(String stopCause) {
+		this.stopCause = stopCause;
+	}
+
+	public String getRemarkStop() {
+		return remarkStop;
+	}
+
+	public void setRemarkStop(String remarkStop) {
+		this.remarkStop = remarkStop;
+	}
+
+	public String getAudioLength() {
+		return audioLength;
+	}
+
+	public void setAudioLength(String audioLength) {
+		this.audioLength = audioLength;
+	}
+
+	public String getDeleteStatus() {
+		return deleteStatus;
+	}
+
+	public void setDeleteStatus(String deleteStatus) {
+		this.deleteStatus = deleteStatus;
+	}
+
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	public String getUserPhone() {
+		return userPhone;
+	}
+
+	public void setUserPhone(String userPhone) {
+		this.userPhone = userPhone;
+	}
+
+
+
+	public String getCallStatus() {
+		return callStatus;
+	}
+
+	public void setCallStatus(String callStatus) {
+		this.callStatus = callStatus;
+	}
+
+	public String getMemberHeadImg() {
+		return memberHeadImg;
+	}
+
+	public void setMemberHeadImg(String memberHeadImg) {
+		this.memberHeadImg = memberHeadImg;
+	}
+
+	public String getReceiveUpdate() {
+		return receiveUpdate;
+	}
+
+	public void setReceiveUpdate(String receiveUpdate) {
+		this.receiveUpdate = receiveUpdate;
+	}
+
+	public List<GmsAlarmReceive> getReceiveList() {
+		return receiveList;
+	}
+
+	public void setReceiveList(List<GmsAlarmReceive> receiveList) {
+		this.receiveList = receiveList;
+	}
+
+	public String getPhone(){
+		return phone;
+	}
+
+	public void setPhone(String phone) {
+		this.phone = phone;
+	}
+
+	public String getCount() {
+		return count;
+	}
+
+	public void setCount(String count) {
+		this.count = count;
+	}
+
+	@Temporary
+	@JsonIgnore
+	private String tokenID;
+
+	public String getTokenID() {
+		return tokenID;
+	}
+
+	public void setTokenID(String tokenID) {
+		this.tokenID = tokenID;
+	}
+
+	public String getAge() {
+		return age;
+	}
+
+	public void setAge(String age) {
+		this.age = age;
+	}
+
+	public String getSex() {
+		return sex;
+	}
+
+	public void setSex(String sex) {
+		this.sex = sex;
+	}
+
+	public String getAlarmID() {
+		return alarmID;
+	}
+
+	public void setAlarmID(String alarmID) {
+		this.alarmID = alarmID;
+	}
+
+	public String getUserID() {
+		return userID;
+	}
+
+	public void setUserID(String userID) {
+		this.userID = userID;
+	}
+
+	public String getUserName() {
+		return userName;
+	}
+
+	public void setUserName(String userName) {
+		this.userName = userName;
+	}
+
+	public String getAlarmLevel() {
+		return alarmLevel;
+	}
+
+	public void setAlarmLevel(String alarmLevel) {
+		this.alarmLevel = alarmLevel;
+	}
+
+	public String getMessageType() {
+		return messageType;
+	}
+
+	public void setMessageType(String messageType) {
+		this.messageType = messageType;
+	}
+
+	public String getMessageText() {
+		return messageText;
+	}
+
+	public void setMessageText(String messageText) {
+		this.messageText = messageText;
+	}
+
+	public String getMessage() {
+		return message;
+	}
+
+	public void setMessage(String message) {
+		this.message = message;
+	}
+
+	public String getInputDate() {
+		return inputDate;
+	}
+
+	public void setInputDate(String inputDate) {
+		this.inputDate = inputDate;
+	}
+
+	public String getIscheack() {
+		return ischeack;
+	}
+
+	public void setIscheack(String ischeack) {
+		this.ischeack = ischeack;
+	}
+
+	public String getStatus() {
+		return status;
+	}
+
+	public void setStatus(String status) {
+		this.status = status;
+	}
+
+	public String getAddressID() {
+		return addressID;
+	}
+
+	public void setAddressID(String addressID) {
+		this.addressID = addressID;
+	}
+
+	public String getAddressName() {
+		return addressName;
+	}
+
+public void setAddressName(String addressName) {
+		this.addressName = addressName;
+	}
+
+	//	@JsonIgnore
+	private String status;
+	@JsonIgnore
+	private String addressID;
+
+	private String addressName;
+	
+	private String longitude;
+	
+	private String latitude;
+
+	public String getLongitude() {
+		return longitude;
+	}
+
+	public void setLongitude(String longitude) {
+		this.longitude = longitude;
+	}
+
+	public String getLatitude() {
+		return latitude;
+	}
+
+	public void setLatitude(String latitude) {
+		this.latitude = latitude;
+	}
+
+
+}

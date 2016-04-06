@@ -1,0 +1,122 @@
+package com.derbysoft.controller.appgms;
+
+import com.derbysoft.controller.service.BaseDaoController;
+import com.derbysoft.entity.AlarmCallTime;
+import com.derbysoft.entity.cms.GmsAlarmCall;
+import com.derbysoft.entity.cms.Member;
+import com.derbysoft.jms.activemq.JpushSender;
+import com.derbysoft.redis.service.UserService;
+import dy.hrtworkframe.dao.BaseDaoImpl;
+import java.io.PrintStream;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import net.sf.json.JSONObject;
+import org.quartz.Job;
+import org.quartz.JobExecutionContext;
+import org.quartz.JobExecutionException;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+@Service
+public class RedisCallQuartz extends BaseDaoController
+  implements Job
+{
+
+  @Autowired
+  private UserService userService;
+
+  @Autowired
+  private BaseDaoImpl baseDaoImpl;
+
+  @Autowired
+  private JpushSender jpushSender;
+
+  public void execute(JobExecutionContext arg0)
+    throws JobExecutionException
+  {
+    try
+    {
+      this.userService.delAddressUser();
+
+      Map redisTodayCallTime = this.userService.getRedisTodayCallTime();
+      if (redisTodayCallTime == null) return;
+      Iterator its = redisTodayCallTime.values().iterator();
+      while (its.hasNext()) {
+        JSONObject fromObject = JSONObject.fromObject(its.next());
+        AlarmCallTime val = (AlarmCallTime)JSONObject.toBean(fromObject, AlarmCallTime.class);
+
+        long result = System.currentTimeMillis() - val.getL();
+
+        String jpushNumToP = this.userService.getJpushNumToP(val.getId());
+        if ((result > Long.parseLong(this.userService.getJpushTime()) * 1000L * Integer.parseInt(this.userService.getJpushNum())) || (Integer.parseInt(jpushNumToP) > Integer.parseInt(this.userService.getJpushNum()))) {
+          this.userService.delRedisAlarmCallTime(val.getId());
+          Map m1 = new HashMap();
+
+          GmsAlarmCall alarmCall = new GmsAlarmCall();
+          alarmCall.setAlarmID(val.getId());
+          Member userVal = new Member();
+          userVal.setAlias(val.getAlias());
+          m1.put("peopleCall", alarmCall);
+          m1.put("userAlias", userVal);
+          m1.put("msg", "当前没有空闲警员，我们将通过指挥中心调派。给您带来的不便请谅解!");
+          m1.put("msgCode", "601");
+          m1.put("styleNum", "3");
+          this.jpushSender.send(m1, REFUSE);
+        }
+
+        if ((result > Long.parseLong(this.userService.getJpushTime()) * 1000L) && (Integer.parseInt(jpushNumToP) <= Integer.parseInt(this.userService.getJpushNum()))) {
+          val.setL(System.currentTimeMillis());
+          this.userService.setRedisAlarmCallTime(val);
+          this.userService.setJpushNumToP(val.getId());
+          List query = this.baseDaoImpl.query(GmsAlarmCall.class, "select * from gms_alarm_call where alarmid = '" + val.getId() + "'");
+          List list = getPolice((GmsAlarmCall)query.get(0));
+          List queryM = this.baseDaoImpl.query(Member.class, "select * from cms_user where username = '" + ((GmsAlarmCall)query.get(0)).getPhone() + "'");
+          Map m = new HashMap();
+          int i = Integer.parseInt(jpushNumToP);
+          if (i < list.size())
+          {
+            m.put("who", "police");
+            m.put("peopleCall", query.get(0));
+            m.put("poliseFirst", list.get(i));
+            m.put("userAlias", queryM.get(0));
+            m.put("styleNum", "5");
+            this.jpushSender.send(m, "POLICE");
+          }
+          else
+          {
+            this.userService.delRedisAlarmCallTime(val.getId());
+            GmsAlarmCall alarmCall = new GmsAlarmCall();
+            Map m1 = new HashMap();
+            alarmCall.setAlarmID(val.getId());
+            Member userVal = new Member();
+            userVal.setAlias(val.getAlias());
+            m1.put("peopleCall", alarmCall);
+            m1.put("userAlias", userVal);
+            m1.put("msg", "当前没有空闲警员，我们将通过指挥中心调派。给您带来的不便请谅解!");
+            m1.put("msgCode", "601");
+            m1.put("styleNum", "3");
+            this.jpushSender.send(m1, REFUSE);
+          }
+        }
+      }
+
+    }
+    catch (Exception e)
+    {
+      e.printStackTrace(); }
+  }
+
+  public static void main(String[] args) {
+    AlarmCallTime vala = new AlarmCallTime();
+    vala.setId("11223344");
+    vala.setL(123456L);
+    Map redisTodayCallTime = new HashMap();
+    redisTodayCallTime.put("11223344", vala);
+    Iterator its = redisTodayCallTime.values().iterator();
+    while (its.hasNext())
+      System.out.println(its.next());
+  }
+}

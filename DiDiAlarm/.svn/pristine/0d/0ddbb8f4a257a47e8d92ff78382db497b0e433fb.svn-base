@@ -1,0 +1,191 @@
+package com.derbysoft.service.cms;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.annotation.Resource;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.derbysoft.controller.sys.SYS_Bar;
+import com.derbysoft.dao.cms.NewsDao;
+import com.derbysoft.dao.sys.UserDao;
+import com.derbysoft.entity.cms.Label;
+import com.derbysoft.entity.echarts.Sector;
+import com.derbysoft.entity.sys.Company;
+import com.derbysoft.entity.sys.ItemStyle;
+import com.derbysoft.entity.sys.Normal;
+import com.derbysoft.entity.sys.SYS_Date;
+import com.derbysoft.entity.sys.SYS_Dic;
+import com.derbysoft.entity.sys.SYS_RoleButton;
+import com.derbysoft.entity.sys.SYS_User;
+
+import dy.hrtworkframe.entity.Pager;
+  
+
+    
+@Service
+public class DateService {
+
+	@Autowired
+	private NewsDao newDao;
+	@Resource(name = "userDao")
+	private UserDao userDao;
+	
+	//查询警局的种类
+	
+	public ArrayList<String> findPolice(){
+		ArrayList<String> arrayList = new ArrayList<String>();
+		String w="select * from  sys_company where  1=1 GROUP by CompanyID";
+		List<Company> query = newDao.query(Company.class, w);
+		 for(int i=0;i<query.size();i++){         	
+         arrayList.add(query.get(i).getCompanyName());
+         }
+         return arrayList;
+	}
+	
+	public ArrayList<SYS_Bar> findCaseNum(List<Sector> entity){
+		ArrayList<SYS_Bar> barList = new ArrayList<SYS_Bar>();
+		if(0==entity.size()){
+			return null;
+		}
+		for(int i=0 ;i<entity.size(); i++){
+			
+		SYS_Bar sys_Bar = new SYS_Bar();	
+		ArrayList<String> arrayList = new ArrayList<String>();
+		arrayList.add(entity.get(i).getValue());
+		sys_Bar.setData(arrayList);
+		sys_Bar.setName(entity.get(i).getName());
+		sys_Bar.setType("bar");
+		ItemStyle itemStyle = new ItemStyle();
+		Normal normal = new Normal();
+		Label label = new  Label();
+		label.setShow("true");
+		label.setFormatter("{a}\n{c}件");
+		label.setPosition("top");
+		normal.setLabel(label);
+		normal.setBarBorderRadius("10");
+		itemStyle.setNormal(normal);
+		sys_Bar.setItemStyle(itemStyle);
+		barList.add(sys_Bar);
+		}
+		
+         return barList;
+	}
+	
+	/**
+	 * 
+	     * @discription 查找案件类型
+	     * @author Knight      
+	     * @created 2016年2月15日 下午2:06:22     
+	     * @return
+	 */
+	public ArrayList<String> findCase(){
+		ArrayList<String> arrayList = new ArrayList<String>();
+		String w="select * from sys_dic where CategoryID='casetype' ";
+		List<SYS_Dic> query = newDao.query(SYS_Dic.class, w);
+		 for(int i=0;i<query.size();i++){         	
+         arrayList.add(query.get(i).getDicName());
+         }
+         return arrayList;
+	}
+	/**
+	 * 
+	     * @discription 获得用户的权限
+	     * @author Knight      
+	     * @created 2016年2月15日 下午2:16:23     
+	     * @param user
+	     * @param moduleID
+	     * @return
+	     * @throws Exception
+	 */
+	public List<SYS_RoleButton> findAuthority(SYS_User user,String moduleID) throws Exception {
+		String sql = "select * "
+				+ " from SYS_RoleButton "
+				+ " where ModuleID= '" + moduleID + "' and roleID = '"+user.getRoleID()+"' ;";
+		List<SYS_RoleButton> query = userDao.query(SYS_RoleButton.class, sql);
+         return query;
+	}
+	/**
+	 * 
+	     * @discription find链表
+	     * @author Knight      
+	     * @created 2016年2月15日 下午2:21:02     
+	     * @param user
+	     * @param moduleID
+	     * @return
+	     * @throws Exception
+	 */
+	public List<SYS_Date> findListing(Pager pager) throws Exception {
+		String sql="select * from SYS_Date where 1=1 and title like '%"+pager.getParameters().get("searchText")+"%'";
+		
+		List<SYS_Date> query = userDao.query(SYS_Date.class, sql);
+        for(int i=0;i<query.size();i++){
+        	if(query.get(i).getDateID().equals("434657645434")){
+        		SYS_Date sys_Date = query.get(i);
+        		//query.add(0, );
+        		query.remove(sys_Date);
+        	  query.add(0, sys_Date);
+        	}
+        }
+        
+		return query;
+	}
+	/**
+	 * 
+	     * @discription find单个数据
+	     * @author Knight      
+	     * @created 2016年2月15日 下午2:21:02     
+	     * @param user
+	     * @param moduleID
+	     * @return
+	     * @throws Exception
+	 */
+	public SYS_Date findDate(SYS_Date entity) throws Exception {
+		String sql="select * from SYS_Date where 1=1 and dateid='"+entity.getDateID()+"'";
+		List<SYS_Date> query = userDao.query(SYS_Date.class, sql);
+		SYS_Date sys_Date = query.get(0);
+         return sys_Date;
+	}
+	/**
+	 * 
+	     * @discription 更新数据
+	     * @author Knight      
+	     * @created 2016年2月15日 下午2:29:50     
+	     * @param entity
+	     * @return
+	     * @throws Exception
+	 */
+	public void updateDate(SYS_Date entity) throws Exception {
+		String sql=" update SYS_Date SET `explain`= '"+entity.getExplain()+"', title='" +entity.getTitle()+"' where dateid='"+entity.getDateID()+"'";
+        userDao.jdbcTemplate.execute(sql);
+	}
+	/**
+	 * 
+	     * @discription 查找派出所的类型
+	     * @author Knight      
+	     * @created 2016年2月15日 下午2:33:08     
+	     * @param entity
+	     * @return
+	     * @throws Exception
+	 */
+	public List<Company> findCompany() throws Exception {
+		String w = "select * from  sys_company where  1=1 GROUP by CompanyID";
+		List<Company> query = userDao.query(Company.class, w);
+         return query;
+	}
+	/**
+	 * 
+	     * @discription 寻找警察
+	     * @author Knight      
+	     * @created 2016年2月15日 下午3:01:02     
+	     * @return
+	     * @throws Exception
+	 */
+	public List<SYS_User> findPoliceman() throws Exception {
+		String w = "select * from  sys_user where  1=1 and tag='tag_police' ";
+		List<SYS_User> query = userDao.query(SYS_User.class, w);
+         return query;
+	}
+}

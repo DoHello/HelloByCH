@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://java.sun.com/xml/ns/j2ee" xmlns:web="http://java.sun.com/xml/ns/javaee" xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd" version="3.0">
+  <display-name>Spring BlazeDS Integration Samples</display-name>
+  <context-param>
+    <param-name>contextConfigLocation</param-name>
+    <param-value>/WEB-INF/spring/*-config.xml</param-value>
+  </context-param>
+  <filter>
+    <filter-name>CharacterEncodingFilter</filter-name>
+    <filter-class>org.springframework.web.filter.CharacterEncodingFilter
+		</filter-class>
+    <init-param>
+      <param-name>encoding</param-name>
+      <param-value>utf-8</param-value>
+    </init-param>
+  </filter>
+  <filter-mapping>
+    <filter-name>CharacterEncodingFilter</filter-name>
+    <url-pattern>/*</url-pattern>
+  </filter-mapping>
+  <filter>
+    <filter-name>SessionFilter</filter-name>
+    <filter-class>com.derbysoft.filter.SessionFilter</filter-class>
+    <init-param>
+      <description>将当前登录的用户的信息保存在 session 中时使用的key，如果没有配置此参数，则该过滤器不起作用
+			</description>
+      <param-name>sessionKey</param-name>
+      <param-value>SessionUser</param-value>
+    </init-param>
+    <init-param>
+      <description>
+				如果用户未登录（即在 session 中 key 为 sessionKey
+				的属性不存在或为空），则将请求重定向到该 url。  
+				该 url 不包含web应用的 ContextPath。
+				如果不配置此参数，则在用户未登录系统的情况下，直接重定向到web应用的根路径（/）
+			</description>
+      <param-name>redirectUrl</param-name>
+      <param-value>/jsp/system/home/login.jsp</param-value>
+    </init-param>
+    <init-param>
+      <description>
+				不需要进行拦截的 url 的正则表达式，即：如果当前请求的 url 的 servletPath
+				能匹配该正则表达式，则直接放行（即使未登录系统）。
+				此参数的值一般为 loginServlet 和 registServlet 等。
+				另外，参数 redirectUrl 的值不用包含在该正则表达式中，因为 redirectUrl 对应的 url 会被自动放行。
+				还有一点需要说明的是，该参数的值不包含web应用的 ContextPath。
+			</description>
+      <param-name>excepUrlRegex</param-name>
+      <param-value>/police.do|/member.do|/Alarm.do|/login.do|/user.do|/code.do|/siteHome.do|/loginApp.do</param-value>
+    </init-param>
+  </filter>
+  <filter-mapping>
+    <filter-name>SessionFilter</filter-name>
+    <url-pattern>*.do</url-pattern>
+  </filter-mapping>
+  <filter>
+    <filter-name>DruidWebStatFilter</filter-name>
+    <filter-class>com.alibaba.druid.support.http.WebStatFilter
+		</filter-class>
+    <init-param>
+      <param-name>exclusions</param-name>
+      <param-value>/static/*,*.js,*.gif,*.jpg,*.png,*.css,*.ico,/druid/*
+			</param-value>
+    </init-param>
+  </filter>
+  <filter-mapping>
+    <filter-name>DruidWebStatFilter</filter-name>
+    <url-pattern>/*</url-pattern>
+  </filter-mapping>
+  <servlet>
+    <servlet-name>DruidStatView</servlet-name>
+    <servlet-class>com.alibaba.druid.support.http.StatViewServlet
+		</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>DruidStatView</servlet-name>
+    <url-pattern>/druid/*</url-pattern>
+  </servlet-mapping>
+  <listener>
+    <listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
+  </listener>
+  <listener>
+    <listener-class>
+             org.springframework.web.context.request.RequestContextListener
+         </listener-class>
+  </listener>
+  <listener>
+    <listener-class>flex.messaging.HttpFlexSession</listener-class>
+  </listener>
+  <servlet>
+    <servlet-name>mvc</servlet-name>
+    <servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
+    <init-param>
+      <param-name>contextConfigLocation</param-name>
+      <param-value>/WEB-INF/spring/mvc-servlet.xml</param-value>
+    </init-param>
+    <load-on-startup>1</load-on-startup>
+    <async-supported>true</async-supported>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>mvc</servlet-name>
+    <url-pattern>*.do</url-pattern>
+  </servlet-mapping>
+  <servlet>
+    <servlet-name>derbysoft</servlet-name>
+    <servlet-class>com.derbysoft.servlet.DyApplicationParameterServlet</servlet-class>
+    <load-on-startup>1</load-on-startup>
+    <async-supported>true</async-supported>
+  </servlet>
+  <welcome-file-list>
+    <welcome-file>/jsp/system/home/login.jsp</welcome-file>
+  </welcome-file-list>
+</web-app>

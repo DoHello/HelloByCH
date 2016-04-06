@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+  <head>
+    <meta charset="utf-8">
+    <title>DerbySoft MetaSearch Manager</title>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta http-equiv="X-UA-Compatible" content="IE-9">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="mobile-web-app-capable" content="yes"> 
+    <meta name="renderer" content="webkit">
+    <meta name="format-detection" content="telephone=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, minimal-ui">
+    <!-- Bootstrap -->
+    <link href="css/bootstrap.css" rel="stylesheet">
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/Bina.css">  
+  </head>
+<body>
+	<nav id="main-nav" class="navbar navbar-default navbar-fixed-top" role="navigation">
+      <div class="container">
+        <div class="navbar-header">
+          <a href="javascript:;" type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar">    <!-- aria-expanded="false" aria-controls="navbar"-->
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </a>  
+          <a class="navbar-brand visible-xs logo" href="index.html"></a>        
+        </div>
+
+        <div id="navbar" class="collapse navbar-collapse navbar-scrol ">
+          <div class="row">              
+              <div class="col-lg-2 hidden-xs"><a class="navbar-brand logo" href="index.html"></a></div> 
+             <div class="col-lg-10">
+                <ul class="nav navbar-nav navigation">
+                  <li><a href="platform.html">Platform</a>
+                      <ul class="dropdown-menu" role="menu">
+                         <li><a href="platform.html#Nr3">Metasearch Management</a></li>
+                         <li><a href="platform.html#Nr2">Reporting and Analytics</a></li>
+                         <li><a href="platform.html#Nr4">Automated Bidding Manager</a></li>
+                         <!----------<li><a href="platform.html">More>></a></li>----------->
+                      </ul>
+                  </li>
+                  <li ><a href="Solutions.html">Solutions</a>
+                    <ul class="dropdown-menu" role="menu">
+                         <li><a href="Solutions.html#tabNr1">Connect</a></li>
+                         <li><a href="Solutions.html#tabNr2">Cache</a></li>
+                         <li><a href="Solutions.html#tabNr3">Control</a></li>
+                         <!----------<li><a href="Solutions.html">More>></a></li>-------->
+                      </ul>
+                  </li>
+                  <li><a href="channel.html">Channels</a>
+                    <ul class="dropdown-menu" role="menu">
+                         <li><a href="channel.html">Google Hotel Ad</a></li>
+                         <li><a href="channel.html">TripAdvisor</a></li>
+                         <li><a href="channel.html">Kayak</a></li>
+                         <li><a href="channel.html">Trivago</a></li>
+                         <li><a href="channel.html">Qunar</a></li>
+                         <!----------<li><a href="channel.html">More>></a></li>---------->
+                    </ul>
+                  </li>             
+                  <li><a href="Resources2.html">Resources</a>
+                    <ul class="dropdown-menu" role="menu">
+                         
+                         <li><a href="Resources2.html#download">White Paper</a></li>
+                         <li><a href="Resources2.html#information">News</a></li>
+                         <!----------<li><a href="Resources2.html">More>></a></li>------>
+                      </ul>
+                  </li>
+                  <li><a href="about.html">About Us</a>
+                    <ul class="dropdown-menu" role="menu">
+                         <li><a href="about.html">At A Glance</a></li>
+                         <li><a href="about.html#at2">Our Culture</a></li>
+                         <li><a href="about.html#at3">Our Vision</a></li>
+                         <!----------<li><a href="about.html">More>></a></li>-------->
+                      </ul>
+                  </li>
+                  <li><a href="message.html" >Contact</a>
+                    <ul class="dropdown-menu" role="menu">
+                         <li style="display:none;"><a href="index.html#contactus">Email</a></li>
+                         <li style="display:none;"><a href="message.html">Message</a></li>
+                         <li style="display:none;"><a href="message.html">Message</a></li>
+                         <li><a href="index.html#contactus">More>></a></li>
+                      </ul>
+                  </li>
+                  <li class="hidden-xs"><a href="login.html" class="icon-logo"><i class="loginTxt">Sign in</i></a></li>
+                </ul>
+             </div>            
+          </div>  
+        </div>
+      </div>
+  </nav>
+    <div class="container eventsCon">
+    	<h3 class="Toptitle pos_r">EVENTS</h3>
+        <h2 class="red_title pos_r">FREE SEMINAR :Direct Sales to China and Beyond</h2>
+        <div class="white_k">
+        	<div class="pos_r">
+                <h4><span class="glyphicon glyphicon-minus text-right"></span>FREE SEMINAR :Direct Sales to China and Beyond</h4>
+                <p>While most global travel leaders are charting their courses cautiously,some are looking at creating exciting new opportunities or entering new markets in the midst of the 
+industry’s swirling currensts.China remains the hotspot of the world’s travel market in 2013 the number of Chinese outbound travelers grew by 18%,and their spending increased 
+by 20%reaching 120 billion U.S. dollars.</p>
+				<p>Just how different are current entry strategies,and what tactics offer the best chance at making areal breakthrough in the China market and navigating through this challenging 
+time?How can Asia Pacific hotels gain more bookings from the competitive China market?
+DerbySoft is a leading global technology company headquartered in Shanghai,and we invite you to the DerbySoft Advisory Forum to share our experiences and technology with 
+you that can help you improve direct sales to China and even beyond China.</p>
+				<h4><span class="glyphicon glyphicon-minus text-right"></span>Agenda</h4>
+                <p>1.30-2.00 pm: Registrations<br/>
+2.00-3.00 pm: The New Opportunities ,Trends ,Challenges and Solutions for Metasearch Marketing(Speaker :Wei Xia, DerbySoft, VP, New Product and Services)<br/>
+3.00-3.30:Coffee Break<br/>
+3.30-4.30pm:Direct Sales to China and Beyond(Speaker ：Feng  Ou ,DerSoft ,Co-founder and CTO)<br/>
+4.30-5.30pm:Networking Cocktail Party</p>
+				<h4><span class="glyphicon glyphicon-minus text-right"></span>In this advisory forum ,you will learn about:</h4>
+                <p>-The trends and developments of China travel market<br/>
+-How to improve your hotel's booking capability<br/>
+-How to enhance your hotel's ability to cooperate with key Chinese and global metasearch website and OTAs<br/>
+-How to increase your hotel's brand.com direct sales<br/>
+-How to integrate Chinese social media and new channels with your hotel's brand.com and hotel management system<br/>
+-How to boost your marketing ROL</p>
+				<h4><span class="glyphicon glyphicon-minus text-right"></span>Invitees:</h4>
+                <p>Hotel General Managers ,Resident Managers, and Directors/Managers from Sales and Marketing and E-commerce departments</p>
+                <h4><span class="glyphicon glyphicon-minus text-right"></span>About DerbySoft Inc.</h4>
+                <p>Found in 2002 ,DerbySoft Inc., provides the technology that connects many of the world's largest hotel companies to most of the world's largest travel booking web sites .
+As internet hotel bookings continue grow worldwide, global hotel companies such as Hilton, Marriott, and InterContinental Hotels, increasingly rely on DerbySoft's distributed and 
+cloud-based technologies to process, manage and optimize the multitudes of reservation transactions originating from online travel agencies(OTAs)and metasearch sites all the 
+while minimizing the impact on the hotel company's technology infrastructure and resources. DerbySoft's U.S. headquarters are in Dallas, and its worldwide technology 
+headquarters are in Shanghai, China, where it also operates one of China's largest hotel central reservations systems, providing online reservation distribution services to nearly 
+1,000 Chinese local hotel properties.</p>
+				<h4><span class="glyphicon glyphicon-minus text-right"></span>Meet DerbySoft Team at 2014 DerbySoft Advisory Forum,Bali!</h4>
+                <p>Feng Ou,CTO(More than 0 years’ experience in the technology,internet and travel technology internet and travel technology industries in China,and U.S.
+Wei xia,VP,New Product and Services(More than 220 years’s experience in IT industry in China,U.S. and Singapore)
+Elise Lim,Director of Metasearch (More than 10 years‘ sales and marketing experience in hospitality and real-estate industries in China,Malaysia, Indonesia and Australia)
+Mindy Wen,Director of MetaSearch Business Development,APAC region (More than 10 years’ experience in hospitality industry in China, U.S.,Switzerland and U.K)
+Fei Li,Product Senior Manager(More than 6 years’ experience in the technology,internet and travel technology industries in China)
+Summer Zhu,Chinese Channel Services Manager (More than 15 years’ experience in travel and travel technology industries in China)</p>
+				<h4><span class="glyphicon glyphicon-minus text-right"></span>Some of our clients and partners</h4>
+            	<p><img src="images/partners.jpg"></p>
+           </div>
+           <div class="events_bg visible-xs"></div>
+        </div>
+        <div class="events_bg hidden-xs"></div>
+        <div class="on_next">
+          <p class="col-lg-6 col-xs-6">Prev：<a href="#">Ted Zhang, CEO and co-founder of DerbySoft, invited to discuss </a></p>
+          <p class="col-lg-6 col-xs-6 text-right">Next：<a href="#">Ted Zhang, CEO and co-founder of DerbySoft, invited to discuss </a></p></div>
+    </div>
+<script src="js/require.js" data-main="js/main" ></script>
+</body>
+</html>
